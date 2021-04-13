@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/receiveds",
+      "handler": "received.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/receiveds/count",
+      "handler": "received.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/receiveds/:id",
+      "handler": "received.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/receiveds",
+      "handler": "received.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/receiveds/:id",
+      "handler": "received.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/receiveds/:id",
+      "handler": "received.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

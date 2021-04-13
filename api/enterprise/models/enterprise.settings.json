@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "enterprises",
+  "info": {
+    "name": "enterprise",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "rut": {
+      "model": "rut",
+      "via": "enterprises"
+    },
+    "emits": {
+      "via": "enterprise",
+      "collection": "emit"
+    },
+    "receiveds": {
+      "via": "enterprise",
+      "collection": "received"
+    }
+  }
+}

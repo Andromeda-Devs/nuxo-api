@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "receiveds",
+  "info": {
+    "name": "received"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "pdf": {
+      "type": "richtext"
+    },
+    "enterprise": {
+      "model": "enterprise",
+      "via": "receiveds"
+    }
+  }
+}

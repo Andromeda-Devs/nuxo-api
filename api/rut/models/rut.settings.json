@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ruts",
+  "info": {
+    "name": "rut"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "rut": {
+      "type": "string"
+    },
+    "password": {
+      "type": "password"
+    },
+    "enterprises": {
+      "via": "rut",
+      "collection": "enterprise"
+    }
+  }
+}
