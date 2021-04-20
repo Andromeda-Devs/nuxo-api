@@ -7,10 +7,11 @@
       "config": {
         "policies": []
       }
-    },{
-      "method": "GET",
-      "path": "/emits/prueba",
-      "handler": "emit.getEmited",
+    },
+    {
+      "method": "POST",
+      "path": "/emits/refresh",
+      "handler": "emit.refresh",
       "config": {
         "policies": []
       }

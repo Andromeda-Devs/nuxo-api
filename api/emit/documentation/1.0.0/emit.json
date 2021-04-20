@@ -254,10 +254,10 @@
         }
       }
     },
-    "/emits/prueba": {
-      "get": {
+    "/emits/refresh": {
+      "post": {
         "deprecated": false,
-        "description": "",
+        "description": "Create a new record",
         "responses": {
           "200": {
             "description": "response",
@@ -308,7 +308,21 @@
         "tags": [
           "Emit"
         ],
-        "parameters": []
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "foo": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/emits/count": {

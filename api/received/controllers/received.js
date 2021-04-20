@@ -1,8 +1,13 @@
 'use strict';
 
-/**
- * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-controllers)
- * to customize this controller
- */
+const refresh = async (ctx) => {
+    const result = await strapi.services.scrapper.getEmited({
+        rut: '16.593.992-1',
+        clave: 'Felipe23'
+    });
+    return result;
+}
 
-module.exports = {};
+module.exports = {
+    refresh
+};

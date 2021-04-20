@@ -9,6 +9,14 @@
       }
     },
     {
+      "method": "POST",
+      "path": "/receiveds/refresh",
+      "handler": "received.refresh",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "GET",
       "path": "/receiveds/count",
       "handler": "received.count",

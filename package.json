@@ -7,11 +7,16 @@
     "develop": "strapi develop",
     "start": "strapi start",
     "build": "strapi build",
-    "strapi": "strapi"
+    "strapi": "strapi",
+    "seeds": "knex seed:run"
   },
   "devDependencies": {},
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0",
+    "faker": "^5.5.3",
     "knex": "0.21.18",
+    "knex-cli": "^1.0.2",
     "mysql": "^2.18.1",
     "pg": "^8.6.0",
     "puppeteer": "^8.0.0",

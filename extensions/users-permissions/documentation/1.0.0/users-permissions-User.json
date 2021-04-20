@@ -1250,6 +1250,43 @@
                 "type": "string"
               }
             }
+          },
+          "ruts": {
+            "type": "array",
+            "items": {
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "rut": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "enterprises": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "user": {
+                  "type": "string"
+                },
+                "published_at": {
+                  "type": "string"
+                },
+                "created_by": {
+                  "type": "string"
+                },
+                "updated_by": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -1291,6 +1328,12 @@
           },
           "role": {
             "type": "string"
+          },
+          "ruts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "created_by": {
             "type": "string"

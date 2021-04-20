@@ -14,11 +14,16 @@
       "type": "string"
     },
     "password": {
-      "type": "password"
+      "type": "string"
     },
     "enterprises": {
       "via": "rut",
       "collection": "enterprise"
+    },
+    "user": {
+      "via": "ruts",
+      "plugin": "users-permissions",
+      "model": "user"
     }
   }
 }
