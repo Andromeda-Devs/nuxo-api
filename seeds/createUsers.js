@@ -30,12 +30,19 @@ const crateUsers =  async (knex) =>{
       updated_by:admin.id
     });
     const unaEmpresa = await knex('users-permissions_user').where({username : "unaEmpresa"}).first();
+    const multiEmpresas = await knex('users-permissions_user').where({username : "multiEmpresas"}).first();
+
     await knex('ruts').del();
     await knex('ruts').insert([
       {
         rut: '16.593.992-1',
         password:'Felipe23',
         user: unaEmpresa.id,
+      }, 
+      {
+        rut: '13416199-K',
+        password:'msepulveda',
+        user: multiEmpresas.id,
       }
     ]);
 }

@@ -1,5 +1,7 @@
 'use strict';
 const puppeteer = require('puppeteer');
+const data = require('../../../data.json');
+
 
 const scraperObj = {
   url: 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoRutClave.html?https://www1.sii.cl/cgi-bin/Portal001/mipeSelEmpresa.cgi?DESDE_DONDE_URL=OPCION%3D2%26TIPO%3D4',
@@ -128,6 +130,9 @@ const getEmited = async (settings) => {
   return result;
 }
 
+const data = require('../../../data.json');
+
 module.exports = {
-  getEmited
+  getEmited,
+  test
 };
