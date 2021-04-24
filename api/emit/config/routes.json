@@ -17,6 +17,38 @@
       }
     },
     {
+      "method": "POST",
+      "path": "/emits/refresh-all",
+      "handler": "emit.refreshAll",
+      "config": {
+        "policies": []
+      }
+    },   
+    {
+      "method": "POST",
+      "path": "/emits/create-affect-invoice",
+      "handler": "emit.emitAffectInvoice",
+      "config": {
+        "policies": []
+      }
+    },  
+    {
+      "method": "POST",
+      "path": "/emits/create-exempt-invoice",
+      "handler": "emit.emitExemptInvoice",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/emits/create-dispatch-guide",
+      "handler": "emit.emitDispatchGuide",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "GET",
       "path": "/emits/count",
       "handler": "emit.count",

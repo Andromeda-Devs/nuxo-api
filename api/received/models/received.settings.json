@@ -10,12 +10,30 @@
     "draftAndPublish": true
   },
   "attributes": {
-    "pdf": {
-      "type": "richtext"
-    },
     "enterprise": {
-      "model": "enterprise",
-      "via": "receiveds"
+      "via": "receiveds",
+      "model": "enterprise"
+    },
+    "rut": {
+      "type": "string"
+    },
+    "businessName": {
+      "type": "string"
+    },
+    "document": {
+      "type": "string"
+    },
+    "invoice": {
+      "type": "string"
+    },
+    "date": {
+      "type": "date"
+    },
+    "amount": {
+      "type": "biginteger"
+    },
+    "state": {
+      "type": "string"
     }
   }
 }

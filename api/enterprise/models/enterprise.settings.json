@@ -11,9 +11,6 @@
     "draftAndPublish": true
   },
   "attributes": {
-    "name": {
-      "type": "string"
-    },
     "rut": {
       "model": "rut",
       "via": "enterprises"
@@ -23,8 +20,11 @@
       "collection": "emit"
     },
     "receiveds": {
-      "via": "enterprise",
-      "collection": "received"
+      "collection": "received",
+      "via": "enterprise"
+    },
+    "enterpriseRut": {
+      "type": "string"
     }
   }
 }

@@ -1,13 +1,32 @@
 'use strict';
 
+const { refreshInformationReceived }  = require("../../../workers");
+
 const refresh = async (ctx) => {
-    const result = await strapi.services.scrapper.getEmited({
-        rut: '16.593.992-1',
-        clave: 'Felipe23'
+    const rut = await strapi.query('rut').findOne({ 
+        rut : ctx.request.body.rut
     });
-    return result;
+    if(!rut) return null;
+    refreshInformationReceived.add({
+        ...rut,
+        clave: rut.password,
+        });
+    return {message:"process in progress"};
+}
+
+const refreshAll = async (ctx) => {
+    const ruts = await strapi.query('rut');
+    if(!ruts) return null;
+    ruts.map(async ( rut)=>{
+        refreshInformationReceived.add({
+            ...rut,
+            clave: rut.password,
+            });
+    });
+    return { message:"process in progress" };
 }
 
 module.exports = {
-    refresh
+    refresh, 
+    refreshAll
 };

@@ -522,9 +522,6 @@
           "id": {
             "type": "string"
           },
-          "name": {
-            "type": "string"
-          },
           "rut": {
             "required": [
               "id"
@@ -569,10 +566,28 @@
                 "id": {
                   "type": "string"
                 },
-                "pdf": {
+                "enterprise": {
                   "type": "string"
                 },
-                "enterprise": {
+                "rut": {
+                  "type": "string"
+                },
+                "businessName": {
+                  "type": "string"
+                },
+                "document": {
+                  "type": "string"
+                },
+                "invoice": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "integer"
+                },
+                "state": {
                   "type": "string"
                 },
                 "published_at": {
@@ -597,10 +612,28 @@
                 "id": {
                   "type": "string"
                 },
-                "pdf": {
+                "enterprise": {
                   "type": "string"
                 },
-                "enterprise": {
+                "rut": {
+                  "type": "string"
+                },
+                "businessName": {
+                  "type": "string"
+                },
+                "document": {
+                  "type": "string"
+                },
+                "invoice": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "integer"
+                },
+                "state": {
                   "type": "string"
                 },
                 "published_at": {
@@ -615,6 +648,9 @@
               }
             }
           },
+          "enterpriseRut": {
+            "type": "string"
+          },
           "published_at": {
             "type": "string",
             "format": "date-time"
@@ -623,9 +659,6 @@
       },
       "NewEnterprise": {
         "properties": {
-          "name": {
-            "type": "string"
-          },
           "rut": {
             "type": "string"
           },
@@ -640,6 +673,9 @@
             "items": {
               "type": "string"
             }
+          },
+          "enterpriseRut": {
+            "type": "string"
           },
           "published_at": {
             "type": "string",

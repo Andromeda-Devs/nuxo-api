@@ -538,9 +538,6 @@
                 "id": {
                   "type": "string"
                 },
-                "name": {
-                  "type": "string"
-                },
                 "rut": {
                   "type": "string"
                 },
@@ -555,6 +552,9 @@
                   "items": {
                     "type": "string"
                   }
+                },
+                "enterpriseRut": {
+                  "type": "string"
                 },
                 "published_at": {
                   "type": "string"

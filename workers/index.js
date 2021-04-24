@@ -1,9 +1,21 @@
 const { redisConnection } = require('../constants');
-const { test }  = require("../api/scrapper/services/scrapper")
+const { refreshEmits,refreshReceived }  = require("../api/scrapper/services/implementations")
 const Queue = require("bull");
-const refreshInformation  = new Queue("STRAPI/REFRESH_INFORMATION", redisConnection);
+const refreshInformationEmits  = new Queue("STRAPI/REFRESH_INFORMATION_EMITS", redisConnection,  {
+    limiter: {
+      max: 10,
+    },
+  });
 
-refreshInformation.process(test);
+refreshInformationEmits.process(refreshEmits);
+const refreshInformationReceived  = new Queue("STRAPI/REFRESH_INFORMATION_RECEIVED", redisConnection,  {
+  limiter: {
+    max: 10,
+  },
+});
+
+refreshInformationReceived.process(refreshReceived);
 module.exports = {
-    refreshInformation
+    refreshInformationEmits,
+    refreshInformationReceived,
 }

@@ -593,18 +593,12 @@
           "id": {
             "type": "string"
           },
-          "pdf": {
-            "type": "string"
-          },
           "enterprise": {
             "required": [
               "id"
             ],
             "properties": {
               "id": {
-                "type": "string"
-              },
-              "name": {
                 "type": "string"
               },
               "rut": {
@@ -622,6 +616,9 @@
                   "type": "string"
                 }
               },
+              "enterpriseRut": {
+                "type": "string"
+              },
               "published_at": {
                 "type": "string"
               },
@@ -633,6 +630,28 @@
               }
             }
           },
+          "rut": {
+            "type": "string"
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "document": {
+            "type": "string"
+          },
+          "invoice": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string"
+          },
           "published_at": {
             "type": "string",
             "format": "date-time"
@@ -641,10 +660,29 @@
       },
       "NewReceived": {
         "properties": {
-          "pdf": {
+          "enterprise": {
             "type": "string"
           },
-          "enterprise": {
+          "rut": {
+            "type": "string"
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "document": {
+            "type": "string"
+          },
+          "invoice": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "state": {
             "type": "string"
           },
           "published_at": {

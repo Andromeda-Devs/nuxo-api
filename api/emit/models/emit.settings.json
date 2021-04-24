@@ -11,12 +11,30 @@
     "draftAndPublish": true
   },
   "attributes": {
-    "pdf": {
-      "type": "richtext"
-    },
     "enterprise": {
       "model": "enterprise",
       "via": "emits"
+    },
+    "rut": {
+      "type": "string"
+    },
+    "businessName": {
+      "type": "string"
+    },
+    "document": {
+      "type": "string"
+    },
+    "invoice": {
+      "type": "string"
+    },
+    "date": {
+      "type": "date"
+    },
+    "amount": {
+      "type": "biginteger"
+    },
+    "state": {
+      "type": "string"
     }
   }
 }

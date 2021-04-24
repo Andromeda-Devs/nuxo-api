@@ -1,5 +1,5 @@
 require("dotenv").config()
-
+const { knexConfiguration } = require("constants")
 const configuration =   {
   client: process.env.DATABASE_CLIENT || 'mysql',
   connection: {
