@@ -183,7 +183,7 @@ const scraperObj = {
       } = article;
       if (num !== '01') {
         await page.click(products.options.add);
-        await page.waitFor(100);
+        await page.waitForTimeout(100);
       }
       if ((product.type || product.code) && !codeQ) {
         codeQ = !codeQ;
