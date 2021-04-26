@@ -32,21 +32,26 @@ const emitAffectInvoice = async (ctx) =>{
         rut : ctx.request.body.rut
     });
     if(!rut) return null;
-    return createAffectInvoice({
+    await createAffectInvoice({
         ...rut,
         clave: rut.password,
-        ...ctx.request.body})
-
+        }, {
+            ...ctx.request.body.document
+        })
+    return true
 }
 const emitExemptInvoice = async (ctx) =>{
     const rut = await strapi.query('rut').findOne({ 
         rut : ctx.request.body.rut
     });
     if(!rut) return null;
-    return createExemptInvoice({
+    await createExemptInvoice({
         ...rut,
         clave: rut.password,
-        ...ctx.request.body})
+        }, {
+            ...ctx.request.body.document
+        })
+    return true
 
 }
 const emitDispatchGuide = async (ctx) =>{
@@ -54,12 +59,13 @@ const emitDispatchGuide = async (ctx) =>{
         rut : ctx.request.body.rut
     });
     if(!rut) return null;
-    return createDispatchGuide({
+    await createDispatchGuide({
         ...rut,
         clave: rut.password,
         }, {
             ...ctx.request.body.document
         })
+    return true;
 }
 module.exports = {
     refresh, 
