@@ -1,6 +1,7 @@
 'use strict';
 const { refreshInformationEmits }  = require("../../../workers");
 const { createAffectInvoice,createDispatchGuide,createExemptInvoice }  = require("../../scrapper/services/scrapper");
+const { eboleta } = require("../services");
 
 
 const refresh = async (ctx) => {
@@ -67,10 +68,24 @@ const emitDispatchGuide = async (ctx) =>{
         })
     return true;
 }
+const emitEboleta = async (ctx) => {
+
+  await eboleta.login({
+    ...req.body,
+    user: req.body.rut,
+  }); 
+
+  const url = await eboleta.emitTicket({
+    ...req.body
+  });  
+  let stringSplit = url.split("_");
+  return { url: url, folio : stringSplit[1].slice(5,stringSplit[1].length) };
+}
 module.exports = {
     refresh, 
     refreshAll,
     emitAffectInvoice,
     emitDispatchGuide,
     emitExemptInvoice,
+    emitEboleta
 };
