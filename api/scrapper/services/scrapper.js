@@ -248,7 +248,7 @@ const scraperObj = {
       await page.click(this.tags.sign);
       await page.waitForNavigation();
       await page.type(this.tags.certificate, certificatePassword);
-      await page.click(this.finalize);
+      await page.click(this.tags.finalize);
       await page.waitForNavigation();
     }
   },
