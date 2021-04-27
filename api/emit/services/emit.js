@@ -303,32 +303,36 @@ class Eboleta {
 
         //presses eboleta page num pad
         await this.pressNumpad(amount);
-
+        console.log("se ingreso el monto");
         await this.crawler.sleep();
 
         await this.crawler.clickByText("Emitir");
 
         await this.crawler.sleep();
+        console.log("paso el numpad");
 
         await this.crawler.clickByText("Elija tipo boleta", "label");
 
         await this.crawler.sleep();
+        console.log("tipo de boleta seleccionado");
 
         await this.selectBallot(type);
 
         await this.crawler.sleep();
+        console.log("selecciono tipo");
 
         //Fills receiver input if reciver is defined
         await this.fillReceiverFormIfNeeded(receiver);
 
         await this.crawler.sleep();
+        console.log("tipeo receiver");
 
         await this.fillDetailFormIfNeeded(detail);
-
+        console.log("tipeo detalle");
         const downloadButton = await this.getDownloadButton();
 
         const ticketHref = await downloadButton.evaluate(node => node.getAttribute('href'));
-
+        console.log("se obtuvo el href");
         return ticketHref;
 
     }
