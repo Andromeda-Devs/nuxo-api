@@ -524,7 +524,8 @@
           },
           "rut": {
             "required": [
-              "id"
+              "id",
+              "certificatePassword"
             ],
             "properties": {
               "id": {
@@ -543,6 +544,9 @@
                 }
               },
               "user": {
+                "type": "string"
+              },
+              "certificatePassword": {
                 "type": "string"
               },
               "published_at": {

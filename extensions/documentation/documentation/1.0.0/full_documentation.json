@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "04/26/2021 11:23:48 AM"
+    "x-generation-date": "04/27/2021 5:51:04 PM"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -4937,7 +4937,8 @@
           },
           "rut": {
             "required": [
-              "id"
+              "id",
+              "certificatePassword"
             ],
             "properties": {
               "id": {
@@ -4956,6 +4957,9 @@
                 }
               },
               "user": {
+                "type": "string"
+              },
+              "certificatePassword": {
                 "type": "string"
               },
               "published_at": {
@@ -5216,7 +5220,8 @@
       },
       "Rut": {
         "required": [
-          "id"
+          "id",
+          "certificatePassword"
         ],
         "properties": {
           "id": {
@@ -5319,6 +5324,9 @@
               }
             }
           },
+          "certificatePassword": {
+            "type": "string"
+          },
           "published_at": {
             "type": "string",
             "format": "date-time"
@@ -5326,6 +5334,9 @@
         }
       },
       "NewRut": {
+        "required": [
+          "certificatePassword"
+        ],
         "properties": {
           "rut": {
             "type": "string"
@@ -5340,6 +5351,9 @@
             }
           },
           "user": {
+            "type": "string"
+          },
+          "certificatePassword": {
             "type": "string"
           },
           "published_at": {
@@ -5576,7 +5590,8 @@
             "type": "array",
             "items": {
               "required": [
-                "id"
+                "id",
+                "certificatePassword"
               ],
               "properties": {
                 "id": {
@@ -5595,6 +5610,9 @@
                   }
                 },
                 "user": {
+                  "type": "string"
+                },
+                "certificatePassword": {
                   "type": "string"
                 },
                 "published_at": {

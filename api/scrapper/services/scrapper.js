@@ -291,10 +291,10 @@ const startBrowser = async () => {
   try {
     console.log("Iniciando proceso, por favor espere...");
     browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       'ignoreHTTPSErrors': true,
-      timeout: 60000
+      timeout: 60000, 
     });
   } catch (err) {
     console.log("Could not create a browser instance => : ", err);
