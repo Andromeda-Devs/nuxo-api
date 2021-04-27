@@ -235,7 +235,26 @@ const scraperObj = {
       }
     }
   },
+  async finalizeDocument (page, certificatePassword) {
+    await page.click(this.tags.sendBtn);
+    await page.waitForNavigation();
+    await page.click(this.tags.sign);
+    await page.waitForNavigation();
+    await page.type(this.tags.certificate, certificatePassword);
+    await page.click(this.tags.finalize);
+    await page.waitForNavigation();
+    
+    const [link] = await page.$x(`//a[contains( . , 'Ver Documento')]`);
+    if (link) {
+      const href = await page.evaluate(el => {
+        return el.href;
+      }, link)
+      return href;
+    }
+    
+  },
   async createDocument({ document, browser, certificatePassword, ...params }) {
+    let res = '';
     const page = await this.login((await browser.newPage()), params);
     const { products, ...rest } = document;
     for (const key of Object.keys(rest)) {
@@ -243,14 +262,9 @@ const scraperObj = {
     }
     await this.processProducts(page, products);
     if (!params.debug) {
-      await page.click(this.tags.sendBtn);
-      await page.waitForNavigation();
-      await page.click(this.tags.sign);
-      await page.waitForNavigation();
-      await page.type(this.tags.certificate, certificatePassword);
-      await page.click(this.tags.finalize);
-      await page.waitForNavigation();
+      res = await this.finalizeDocument(page, certificatePassword);
     }
+    return res;
   },
   async login(page, { url, username, password }) {
     await page.goto(url);
