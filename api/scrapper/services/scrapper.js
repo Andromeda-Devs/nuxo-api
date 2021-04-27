@@ -68,7 +68,10 @@ const scraperObj = {
     payment: {
       type: 'select[name="EFXP_FMA_PAGO"]'
     },
-    sendBtn: 'button[name="Button_Update"]'
+    sendBtn: 'button[name="Button_Update"]',
+    sign: 'input[name="btnSign"]',
+    certificate: 'input[id="myPass"]',
+    finalize: 'button[id="btnFirma"]'
   },
   async scrapeTable(page) {
     const data = await page.$$eval('table > tbody > tr', elements => {
@@ -183,7 +186,7 @@ const scraperObj = {
       } = article;
       if (num !== '01') {
         await page.click(products.options.add);
-        await page.waitForTimeout(100);
+        await page.waitFor(100);
       }
       if ((product.type || product.code) && !codeQ) {
         codeQ = !codeQ;
@@ -232,7 +235,7 @@ const scraperObj = {
       }
     }
   },
-  async createDocument({ document, browser, ...params }) {
+  async createDocument({ document, browser, certificatePassword, ...params }) {
     const page = await this.login((await browser.newPage()), params);
     const { products, ...rest } = document;
     for (const key of Object.keys(rest)) {
@@ -241,6 +244,11 @@ const scraperObj = {
     await this.processProducts(page, products);
     if (!params.debug) {
       await page.click(this.tags.sendBtn);
+      await page.waitForNavigation();
+      await page.click(this.tags.sign);
+      await page.waitForNavigation();
+      await page.type(this.tags.certificate, certificatePassword);
+      await page.click(this.finalize);
       await page.waitForNavigation();
     }
   },
