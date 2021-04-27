@@ -38,11 +38,13 @@ const crateUsers =  async (knex) =>{
         rut: '16.593.992-1',
         password:'Felipe23',
         user: unaEmpresa.id,
+        certificatePassword:"MerSpa2021@"
       }, 
       {
         rut: '13416199-K',
         password:'msepulveda',
         user: multiEmpresas.id,
+        certificatePassword:"123456"
       }
     ]);
 }

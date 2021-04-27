@@ -516,7 +516,8 @@
     "schemas": {
       "Rut": {
         "required": [
-          "id"
+          "id",
+          "certificatePassword"
         ],
         "properties": {
           "id": {
@@ -619,7 +620,7 @@
               }
             }
           },
-          "digitalCertificateKey": {
+          "certificatePassword": {
             "type": "string"
           },
           "published_at": {
@@ -629,6 +630,9 @@
         }
       },
       "NewRut": {
+        "required": [
+          "certificatePassword"
+        ],
         "properties": {
           "rut": {
             "type": "string"
@@ -645,7 +649,7 @@
           "user": {
             "type": "string"
           },
-          "digitalCertificateKey": {
+          "certificatePassword": {
             "type": "string"
           },
           "published_at": {
