@@ -33,13 +33,12 @@ const emitAffectInvoice = async (ctx) =>{
         rut : ctx.request.body.rut
     });
     if(!rut) return null;
-    await createAffectInvoice({
+    return createAffectInvoice({
         ...rut,
         clave: rut.password,
         }, {
             ...ctx.request.body.document
         })
-    return true
 }
 const emitExemptInvoice = async (ctx) =>{
     const rut = await strapi.query('rut').findOne({ 
@@ -69,16 +68,19 @@ const emitDispatchGuide = async (ctx) =>{
     return true;
 }
 const emitEboleta = async (ctx) => {
-  await eboleta.login({
-    ...ctx.request.body,
-    user: ctx.request.body.rut,
-  }); 
-  console.log("Login correcto");
-  const url = await eboleta.emitTicket({
-    ...ctx.request.body
-  });  
-  let stringSplit = url.split("_");
-  return { url: url, folio : stringSplit[1].slice(5,stringSplit[1].length) };
+    const { id }  = await strapi.plugins[
+        'users-permissions'
+      ].services.jwt.getToken(ctx);
+    const rut = await strapi.query('rut').findOne({ user: id});
+    await eboleta.login({
+        ...rut,
+        user: rut.rut,
+    }); 
+    const url = await eboleta.emitTicket({
+        ...ctx.request.body
+    });  
+    let stringSplit = url.split("_");
+    return { url: url, folio : stringSplit[1].slice(5,stringSplit[1].length) };
 }
 module.exports = {
     refresh, 
