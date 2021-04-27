@@ -27,15 +27,15 @@ class Crawler {
         const url = this.url;
 
         const browser = await puppeteer.launch({
-            headless: false,
-            args: ["--no-sandbox"],
+            headless: true,
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
             'ignoreHTTPSErrors': true,
             timeout: 60000
         });
 
-        // const context = await browser.defaultBrowserContext();
+        const context = await browser.defaultBrowserContext();
 
-        // context.overridePermissions( url , [ "notifications" ] );
+        await context.overridePermissions( url , [ "notifications" ] );
 
         let page = await browser.newPage();
 
@@ -43,6 +43,13 @@ class Crawler {
 
         this._page = page;
 
+    }
+
+    async pressDown(num) {
+        for (let _i = 0; _i < num; _i++) {
+            await this._page.keyboard.press('ArrowDown');
+        }
+        await this._page.keyboard.press('Enter');
     }
 
     async fill(query, value) {
@@ -303,32 +310,36 @@ class Eboleta {
 
         //presses eboleta page num pad
         await this.pressNumpad(amount);
-
+        console.log("se ingreso el monto");
         await this.crawler.sleep();
 
         await this.crawler.clickByText("Emitir");
 
         await this.crawler.sleep();
+        console.log("paso el numpad");
 
         await this.crawler.clickByText("Elija tipo boleta", "label");
 
         await this.crawler.sleep();
+        console.log("tipo de boleta seleccionado");
 
         await this.selectBallot(type);
 
         await this.crawler.sleep();
+        console.log("selecciono tipo");
 
         //Fills receiver input if reciver is defined
         await this.fillReceiverFormIfNeeded(receiver);
 
         await this.crawler.sleep();
+        console.log("tipeo receiver");
 
         await this.fillDetailFormIfNeeded(detail);
-
+        console.log("tipeo detalle");
         const downloadButton = await this.getDownloadButton();
 
         const ticketHref = await downloadButton.evaluate(node => node.getAttribute('href'));
-
+        console.log("se obtuvo el href");
         return ticketHref;
 
     }
@@ -354,12 +365,13 @@ class Eboleta {
         switch (ballotType) {
 
             case 'Boleta Afecta': {
-                await this.crawler.clickBy(this.affectBallot);
+                // await this.crawler.clickBy(this.affectBallot);
+                await this.crawler.pressDown(1);
                 return
             }
 
             case 'Boleta Exenta': {
-                await this.crawler.clickBy(this.exentBallot);
+                await this.crawler.pressDown(2);
                 return
             }
 

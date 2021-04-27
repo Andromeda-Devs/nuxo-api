@@ -545,6 +545,9 @@
               "user": {
                 "type": "string"
               },
+              "digitalCertificateKey": {
+                "type": "string"
+              },
               "published_at": {
                 "type": "string"
               },

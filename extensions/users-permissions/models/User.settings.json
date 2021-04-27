@@ -60,8 +60,8 @@
       "configurable": false
     },
     "ruts": {
-      "collection": "rut",
-      "via": "user"
+      "via": "user",
+      "collection": "rut"
     }
   }
 }

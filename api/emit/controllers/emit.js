@@ -73,6 +73,7 @@ const emitEboleta = async (ctx) => {
     ...ctx.request.body,
     user: ctx.request.body.rut,
   }); 
+  console.log("Login correcto");
   const url = await eboleta.emitTicket({
     ...ctx.request.body
   });  
