@@ -27,7 +27,7 @@ class Crawler {
         const url = this.url;
 
         const browser = await puppeteer.launch({
-            headless: true,
+            headless: false,
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
             'ignoreHTTPSErrors': true,
             timeout: 60000
@@ -43,6 +43,13 @@ class Crawler {
 
         this._page = page;
 
+    }
+
+    async pressDown(num) {
+        for (let _i = 0; _i < num; _i++) {
+            await this._page.keyboard.press('ArrowDown');
+        }
+        await this._page.keyboard.press('Enter');
     }
 
     async fill(query, value) {
@@ -358,12 +365,13 @@ class Eboleta {
         switch (ballotType) {
 
             case 'Boleta Afecta': {
-                await this.crawler.clickBy(this.affectBallot);
+                // await this.crawler.clickBy(this.affectBallot);
+                await this.crawler.pressDown(1);
                 return
             }
 
             case 'Boleta Exenta': {
-                await this.crawler.clickBy(this.exentBallot);
+                await this.crawler.pressDown(2);
                 return
             }
 
