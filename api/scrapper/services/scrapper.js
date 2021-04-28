@@ -24,10 +24,10 @@ const scraperObj = {
       },
       businessName: 'input[name="EFXP_RZN_SOC_RECEP"]',
       purchaseType: 'select[name="EFXP_TIPOCOMPRA_SELECT"]',
-      address: 'input[name="EFXP_DIR_RECEP"]',
+      address: 'select[name="EFXP_DIR_RECEP"]',
       commune: 'input[name="EFXP_CMNA_RECEP"]',
       city: 'input[name="EFXP_CIUDAD_RECEP"]',
-      concept: 'input[name="EFXP_GIRO_RECEP"]',
+      concept: 'select[name="EFXP_GIRO_RECEP"]',
       contact: 'input[name="EFXP_CONTACTO"]',
       requestRut: {
         rut: 'input[name="EFXP_RUT_SOLICITA"]',
