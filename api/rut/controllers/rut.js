@@ -28,6 +28,7 @@ const createRut = async (ctx) =>{
     });
 }
 
+
 module.exports = {
-    createRut
+    createRut,
 };

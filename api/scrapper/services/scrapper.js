@@ -344,7 +344,7 @@ const startBrowser = async () => {
   try {
     console.log("Iniciando proceso, por favor espere...");
     browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       'ignoreHTTPSErrors': true,
       timeout: 60000,
