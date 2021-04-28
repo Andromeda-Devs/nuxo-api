@@ -454,7 +454,7 @@ const createDispatchGuide = async (settings, document) => {
   return result;
 }
 
-const getDocumentReceiver = async (settings, documet) => {
+const getDocumentReceiver = async (settings, document) => {
   const result = await getDocumentData({
     document,
     ...settings
