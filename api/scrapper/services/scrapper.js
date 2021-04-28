@@ -235,7 +235,7 @@ const scraperObj = {
       }
     }
   },
-  async finalizeDocument (page, certificatePassword) {
+  async finalizeDocument(page, certificatePassword) {
     await page.click(this.tags.sendBtn);
     await page.waitForNavigation();
     await page.click(this.tags.sign);
@@ -243,7 +243,7 @@ const scraperObj = {
     await page.type(this.tags.certificate, certificatePassword);
     await page.click(this.tags.finalize);
     await page.waitForNavigation();
-    
+
     const [link] = await page.$x(`//a[contains( . , 'Ver Documento')]`);
     if (link) {
       const href = await page.evaluate(el => {
@@ -251,12 +251,17 @@ const scraperObj = {
       }, link)
       return href;
     }
-    
+
   },
-  async createDocument({ document, browser, certificatePassword, ...params }) {
+  async createDocument({ document, browser, certificatePassword, empOption, ...params }) {
     let res = '';
     const page = await this.login((await browser.newPage()), params);
     const { products, ...rest } = document;
+    if (page.url().includes('mipeSelEmpresa.cgi')) {
+      await page.select('select[name="RUT_EMP"]', empOption)
+      await page.click('button[type="submit"]');
+      await page.waitForSelector('.container');
+    }
     for (const key of Object.keys(rest)) {
       await this.processSelectors(page, rest[key], this.tags[key])
     }
@@ -264,6 +269,40 @@ const scraperObj = {
     if (!params.debug) {
       res = await this.finalizeDocument(page, certificatePassword);
     }
+    return res;
+  },
+  async getReceiverData(page, receiver, result = {}) {
+    if (typeof receiver !== 'string') {
+      for (const key of Object.keys(receiver)) {
+        result[key] = await this.getReceiverData(page, receiver[key]);
+      }
+      return result;
+    }
+    if (receiver.startsWith('input')) {
+      const value = await page.$eval(receiver, item => item.value)
+      return value;
+    } else if (receiver.startsWith('select')) {
+      const options = await page.$$eval(
+        `${receiver} optgroup > option`,
+        opts => opts.map(opt => opt.value)
+      )
+      return options;
+    }
+  },
+  async getReceiver({ document: { receiver: receiverDoc }, browser, empOption, ...params }) {
+    let res = '';
+    const { receiver } = this.tags;
+    const page = await this.login((await browser.newPage()), params);
+    if (page.url().includes('mipeSelEmpresa.cgi')) {
+      await page.select('select[name="RUT_EMP"]', empOption)
+      await page.click('button[type="submit"]');
+      await page.waitForSelector('.container');
+    }
+
+    await this.processSelectors(page, receiverDoc, receiver)
+
+    res = await this.getReceiverData(page, receiver);
+
     return res;
   },
   async login(page, { url, username, password }) {
@@ -308,7 +347,7 @@ const startBrowser = async () => {
       headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       'ignoreHTTPSErrors': true,
-      timeout: 60000, 
+      timeout: 60000,
     });
   } catch (err) {
     console.log("Could not create a browser instance => : ", err);
@@ -354,9 +393,28 @@ const createDocument = async ({ rut: username, clave: password, ...params }) => 
   }
 }
 
+const getDocumentData = async ({ rut: username, clave: password, ...params }) => {
+  let browser;
+  try {
+    browser = await startBrowser();
+    const result = await scraperObj.getReceiver({
+      browser,
+      username,
+      password,
+      ...params
+    });
+    browser.close();
+    return result;
+  }
+  catch (err) {
+    browser.close();
+    throw err;
+  }
+}
+
 const getEmited = async (settings) => {
   const url = 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoRutClave.html?https://www1.sii.cl/cgi-bin/Portal001/mipeSelEmpresa.cgi?DESDE_DONDE_URL=OPCION%3D2%26TIPO%3D4';
-  const result = await scrapeAll({url, ...settings});
+  const result = await scrapeAll({ url, ...settings });
   return result;
 }
 
@@ -396,6 +454,13 @@ const createDispatchGuide = async (settings, document) => {
   return result;
 }
 
+const getDocumentReceiver = async (settings, documet) => {
+  const result = await getDocumentData({
+    document,
+    ...settings
+  });
+  return result;
+}
 
 module.exports = {
   getEmited,
@@ -403,4 +468,5 @@ module.exports = {
   createAffectInvoice,
   createExemptInvoice,
   createDispatchGuide,
+  getDocumentReceiver
 };
