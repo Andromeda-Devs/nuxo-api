@@ -45,6 +45,7 @@ const crateUsers =  async (knex) =>{
         user: unaEmpresa.id,
         certificatePassword:"MerSpa2021@",
         published_at:newdate,
+        favorite:true,
 
       }, 
       {
@@ -53,7 +54,7 @@ const crateUsers =  async (knex) =>{
         user: multiEmpresas.id,
         certificatePassword:"123456",
         published_at:newdate,
-
+        favorite:true,
       }
     ]);
 }

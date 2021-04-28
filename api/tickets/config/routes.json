@@ -2,62 +2,56 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/ruts",
-      "handler": "rut.find",
+      "path": "/tickets",
+      "handler": "tickets.find",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/ruts/count",
-      "handler": "rut.count",
+      "path": "/tickets/count",
+      "handler": "tickets.count",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/ruts/:id",
-      "handler": "rut.findOne",
+      "path": "/tickets/:id",
+      "handler": "tickets.findOne",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/ruts",
-      "handler": "rut.create",
+      "path": "/tickets",
+      "handler": "tickets.create",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/ruts/create",
-      "handler": "rut.createRut",
-      "validate":{
-        "body":{
-           "rut":"string.required",
-           "password":"string.required"
-         }
-      },
+      "path": "/tickets/create",
+      "handler": "tickets.createTicket",
       "config": {
         "policies": []
       }
     },
     {
       "method": "PUT",
-      "path": "/ruts/:id",
-      "handler": "rut.update",
+      "path": "/tickets/:id",
+      "handler": "tickets.update",
       "config": {
         "policies": []
       }
     },
     {
       "method": "DELETE",
-      "path": "/ruts/:id",
-      "handler": "rut.delete",
+      "path": "/tickets/:id",
+      "handler": "tickets.delete",
       "config": {
         "policies": []
       }

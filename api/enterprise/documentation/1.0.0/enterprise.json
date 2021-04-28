@@ -525,7 +525,10 @@
           "rut": {
             "required": [
               "id",
-              "certificatePassword"
+              "rut",
+              "password",
+              "certificatePassword",
+              "favorite"
             ],
             "properties": {
               "id": {

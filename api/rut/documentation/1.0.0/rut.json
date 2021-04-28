@@ -510,6 +510,77 @@
           }
         ]
       }
+    },
+    "/ruts/create": {
+      "post": {
+        "deprecated": false,
+        "description": "Create a new record",
+        "responses": {
+          "200": {
+            "description": "response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "foo": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Rut"
+        ],
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "foo": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -517,7 +588,10 @@
       "Rut": {
         "required": [
           "id",
-          "certificatePassword"
+          "rut",
+          "password",
+          "certificatePassword",
+          "favorite"
         ],
         "properties": {
           "id": {
@@ -612,6 +686,12 @@
                   "type": "string"
                 }
               },
+              "tickets": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
               "created_by": {
                 "type": "string"
               },
@@ -625,7 +705,7 @@
           },
           "favorite": {
             "type": "boolean",
-            "default": true
+            "default": false
           },
           "published_at": {
             "type": "string",
@@ -635,7 +715,10 @@
       },
       "NewRut": {
         "required": [
-          "certificatePassword"
+          "rut",
+          "password",
+          "certificatePassword",
+          "favorite"
         ],
         "properties": {
           "rut": {
@@ -658,7 +741,7 @@
           },
           "favorite": {
             "type": "boolean",
-            "default": true
+            "default": false
           },
           "published_at": {
             "type": "string",

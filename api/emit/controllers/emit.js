@@ -1,8 +1,6 @@
 'use strict';
 const { refreshInformationEmits }  = require("../../../workers");
 const { createAffectInvoice,createDispatchGuide,createExemptInvoice }  = require("../../scrapper/services/scrapper");
-const { eboleta } = require("../services/emit");
-
 
 const refresh = async (ctx) => {
     const rut = await strapi.query('rut').findOne({ 
@@ -67,26 +65,11 @@ const emitDispatchGuide = async (ctx) =>{
         })
     return { url : url };
 }
-const emitEboleta = async (ctx) => {
-    const { id }  = await strapi.plugins[
-        'users-permissions'
-      ].services.jwt.getToken(ctx);
-    const rut = await strapi.query('rut').findOne({ user: id});
-    await eboleta.login({
-        ...rut,
-        user: rut.rut,
-    }); 
-    const url = await eboleta.emitTicket({
-        ...ctx.request.body
-    });  
-    let stringSplit = url.split("_");
-    return { url: url, folio : stringSplit[1].slice(5,stringSplit[1].length) };
-}
+
 module.exports = {
     refresh, 
     refreshAll,
     emitAffectInvoice,
     emitDispatchGuide,
     emitExemptInvoice,
-    emitEboleta
 };
