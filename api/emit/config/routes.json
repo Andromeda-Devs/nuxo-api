@@ -49,14 +49,6 @@
       }
     },
     {
-      "method": "POST",
-      "path": "/emits/create-eboleta",
-      "handler": "emit.emitEboleta",
-      "config": {
-        "policies": []
-      }
-    },
-    {
       "method": "GET",
       "path": "/emits/count",
       "handler": "emit.count",

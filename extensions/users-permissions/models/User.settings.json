@@ -60,8 +60,12 @@
       "configurable": false
     },
     "ruts": {
+      "collection": "rut",
+      "via": "user"
+    },
+    "tickets": {
       "via": "user",
-      "collection": "rut"
+      "collection": "tickets"
     }
   }
 }

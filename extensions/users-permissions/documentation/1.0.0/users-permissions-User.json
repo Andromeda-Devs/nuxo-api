@@ -1256,7 +1256,10 @@
             "items": {
               "required": [
                 "id",
-                "certificatePassword"
+                "rut",
+                "password",
+                "certificatePassword",
+                "favorite"
               ],
               "properties": {
                 "id": {
@@ -1278,6 +1281,46 @@
                   "type": "string"
                 },
                 "certificatePassword": {
+                  "type": "string"
+                },
+                "favorite": {
+                  "type": "boolean"
+                },
+                "published_at": {
+                  "type": "string"
+                },
+                "created_by": {
+                  "type": "string"
+                },
+                "updated_by": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "tickets": {
+            "type": "array",
+            "items": {
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "document": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "user": {
+                  "type": "string"
+                },
+                "amount": {
                   "type": "string"
                 },
                 "published_at": {
@@ -1334,6 +1377,12 @@
             "type": "string"
           },
           "ruts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tickets": {
             "type": "array",
             "items": {
               "type": "string"

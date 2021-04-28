@@ -1,8 +1,6 @@
 'use strict';
 const { refreshInformationEmits }  = require("../../../workers");
 const { createAffectInvoice,createDispatchGuide,createExemptInvoice }  = require("../../scrapper/services/scrapper");
-const { eboleta } = require("../services/emit");
-
 
 const refresh = async (ctx) => {
     const rut = await strapi.query('rut').findOne({ 
@@ -33,58 +31,45 @@ const emitAffectInvoice = async (ctx) =>{
         rut : ctx.request.body.rut
     });
     if(!rut) return null;
-    await createAffectInvoice({
+    const url = await createAffectInvoice({
         ...rut,
         clave: rut.password,
         }, {
             ...ctx.request.body.document
-        })
-    return true
+        });
+    return { url : url };
 }
 const emitExemptInvoice = async (ctx) =>{
     const rut = await strapi.query('rut').findOne({ 
         rut : ctx.request.body.rut
     });
     if(!rut) return null;
-    await createExemptInvoice({
+    const url = await createExemptInvoice({
         ...rut,
         clave: rut.password,
         }, {
             ...ctx.request.body.document
         })
-    return true
-
+   return { url : url };
 }
 const emitDispatchGuide = async (ctx) =>{
     const rut = await strapi.query('rut').findOne({ 
         rut : ctx.request.body.rut
     });
     if(!rut) return null;
-    await createDispatchGuide({
+    const url = await createDispatchGuide({
         ...rut,
         clave: rut.password,
         }, {
             ...ctx.request.body.document
         })
-    return true;
+    return { url : url };
 }
-const emitEboleta = async (ctx) => {
-  await eboleta.login({
-    ...ctx.request.body,
-    user: ctx.request.body.rut,
-  }); 
-  console.log("Login correcto");
-  const url = await eboleta.emitTicket({
-    ...ctx.request.body
-  });  
-  let stringSplit = url.split("_");
-  return { url: url, folio : stringSplit[1].slice(5,stringSplit[1].length) };
-}
+
 module.exports = {
     refresh, 
     refreshAll,
     emitAffectInvoice,
     emitDispatchGuide,
     emitExemptInvoice,
-    emitEboleta
 };

@@ -12,22 +12,30 @@
   },
   "attributes": {
     "rut": {
-      "type": "string"
+      "type": "string",
+      "required": true,
+      "unique": true
     },
     "password": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "enterprises": {
       "collection": "enterprise",
       "via": "rut"
     },
     "user": {
+      "via": "ruts",
       "plugin": "users-permissions",
-      "model": "user",
-      "via": "ruts"
+      "model": "user"
     },
     "certificatePassword": {
       "type": "string",
+      "required": true
+    },
+    "favorite": {
+      "type": "boolean",
+      "default": false,
       "required": true
     }
   }

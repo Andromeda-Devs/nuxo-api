@@ -22,6 +22,11 @@ const users = [
 ];
 
 const crateUsers =  async (knex) =>{
+    var dateObj = new Date();
+    var month = dateObj.getUTCMonth() + 1; //months from 1-12
+    var day = dateObj.getUTCDate();
+    var year = dateObj.getUTCFullYear();
+    const newdate = year + "/" + month + "/" + day;
     await knex('users-permissions_user').del();
     const admin = await knex('strapi_administrator').first('id');
     await knex('users-permissions_user').insert(users);
@@ -38,13 +43,18 @@ const crateUsers =  async (knex) =>{
         rut: '16.593.992-1',
         password:'Felipe23',
         user: unaEmpresa.id,
-        certificatePassword:"MerSpa2021@"
+        certificatePassword:"MerSpa2021@",
+        published_at:newdate,
+        favorite:true,
+
       }, 
       {
         rut: '13416199-K',
         password:'msepulveda',
         user: multiEmpresas.id,
-        certificatePassword:"123456"
+        certificatePassword:"123456",
+        published_at:newdate,
+        favorite:true,
       }
     ]);
 }
