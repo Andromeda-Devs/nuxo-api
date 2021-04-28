@@ -29,6 +29,10 @@
     "certificatePassword": {
       "type": "string",
       "required": true
+    }, 
+    "favorite": {
+      "type": "boolean",
+      "default":true
     }
   }
 }

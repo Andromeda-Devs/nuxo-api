@@ -1280,6 +1280,9 @@
                 "certificatePassword": {
                   "type": "string"
                 },
+                "favorite": {
+                  "type": "boolean"
+                },
                 "published_at": {
                   "type": "string"
                 },

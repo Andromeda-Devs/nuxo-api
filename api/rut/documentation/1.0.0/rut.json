@@ -623,6 +623,10 @@
           "certificatePassword": {
             "type": "string"
           },
+          "favorite": {
+            "type": "boolean",
+            "default": true
+          },
           "published_at": {
             "type": "string",
             "format": "date-time"
@@ -651,6 +655,10 @@
           },
           "certificatePassword": {
             "type": "string"
+          },
+          "favorite": {
+            "type": "boolean",
+            "default": true
           },
           "published_at": {
             "type": "string",
