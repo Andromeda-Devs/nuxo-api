@@ -73,6 +73,14 @@
       }
     },
     {
+      "method": "POST",
+      "path": "/emits/information-receiver",
+      "handler": "emit.documentReceiver",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "PUT",
       "path": "/emits/:id",
       "handler": "emit.update",

@@ -9,7 +9,7 @@ const { eboleta } = require("../services/tickets");
 
  const createTicket = async (ctx) => {
   const { id } = ctx.state.user;
-  const rut = await strapi.query('rut').findOne({ user: id, favorite:true});
+  const rut = await strapi.query('rut').findOne({ user: id, favorite: true});
   await eboleta.login({
       ...rut,
       user: rut.rut,
@@ -47,7 +47,7 @@ const { eboleta } = require("../services/tickets");
     },
   });
   fs.unlinkSync(path);
-  return strapi.query("tickets").findOne(ticket);
+  return strapi.query("tickets").findOne({id:ticket.id});
 }
 module.exports = {
     createTicket

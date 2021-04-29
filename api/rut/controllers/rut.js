@@ -30,6 +30,7 @@ const createRut = async (ctx) =>{
     return createdRut;
 }
 
+
 module.exports = {
-    createRut
+    createRut,
 };
