@@ -15,17 +15,19 @@ const createRut = async (ctx) =>{
         return ctx.badRequest({ message : "rut and password is required" })
     }
     if(await strapi.query("rut").findOne({rut :payload.rut})){
-      return ctx.notAcceptable({message:"rut exist"});
-     }
+        return ctx.notAcceptable({message:"rut exist"});
+    }
     if(!await strapi.query("rut").findOne({ user: id})){
        payload = {
             ...payload,
             favorite:true
         }
     }
-    return strapi.query("rut").create({
+    const createdRut = await strapi.query("rut").create({
         ...payload
     });
+
+    return createdRut;
 }
 
 module.exports = {
