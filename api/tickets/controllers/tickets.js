@@ -7,7 +7,13 @@ const { eboleta } = require("../services/tickets");
  * to customize this controller
  */
 
- const createTicket = async (ctx) => {
+const sleep = (ms) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+const createTicket = async (ctx) => {
   const { id } = ctx.state.user;
   const rut = await strapi.query('rut').findOne({ user: id, favorite: true});
   await eboleta.login({
@@ -20,14 +26,14 @@ const { eboleta } = require("../services/tickets");
   let stringSplit = url.split("_");
   const folio = stringSplit[1].slice(5,stringSplit[1].length) + '.pdf';
   const path = `public/uploads/first_${folio}`;
-  const fileStat = await axios({
+  const response = await axios({
       method: 'get',
       url,
       responseType: 'stream'
-    }).then(function (response) {
-      response.data.pipe(fs.createWriteStream(path))
-      return fs.statSync(path);
-    });
+    })
+  await response.data.pipe(fs.createWriteStream(path))
+  await sleep(3000);
+  const fileStat = fs.statSync(path);
   const ticket = await strapi.query("tickets").create({
     amount: ctx.request.body.amount,
     user: id, 
@@ -47,7 +53,8 @@ const { eboleta } = require("../services/tickets");
     },
   });
   fs.unlinkSync(path);
-  return strapi.query("tickets").findOne({id:ticket.id});
+  const ticketRes = await strapi.query("tickets").findOne({id:ticket.id});
+  return ticketRes;
 }
 module.exports = {
     createTicket
