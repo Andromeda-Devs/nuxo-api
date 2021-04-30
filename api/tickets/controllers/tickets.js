@@ -52,8 +52,6 @@ const createTicket = async (ctx) => {
       response.data.pipe(fs.createWriteStream(publicPath))
       return fs.statSync(publicPath);
     });
-  await sleep(3000);
-  const fileStat = fs.statSync(path);
   const ticket = await strapi.query("tickets").create({
     amount: ctx.request.body.amount,
     user: id, 
