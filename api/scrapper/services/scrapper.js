@@ -1,9 +1,15 @@
 'use strict';
 const puppeteer = require('puppeteer');
+const axios = require('axios');
 
 const scraperObj = {
   multiRoute: '',
   next: 'a[title="Pagina siguiente"]',
+  _documentBaseUrlSent: 'https://www1.sii.cl/cgi-bin/Portal001/mipeDisplayPDF.cgi?DHDR_CODIGO',
+  _documentBaseUrlReceived: 'https://www1.sii.cl/cgi-bin/Portal001/mipeShowPdf.cgi?CODIGO',
+  _limit: null,
+  _browser: null,
+  _ignore: null,
   tags: {
     sender: {
       businessName: 'input[name="EFXP_RZN_SOC"]',
@@ -89,6 +95,45 @@ const scraperObj = {
     });
     return data;
   },
+  async scrapeDocuments(invoices) {
+    const newInvoices = [];
+    let count = 0;
+    for (const invoice of invoices) {
+      const code = invoice['0'].split('CODIGO=')[1].split('&')[0];
+      const url = invoice['0'].includes('mipeGesDocEmi.cgi') ?
+        this._documentBaseUrlSent :
+        this._documentBaseUrlReceived;
+      if (this._ignore.includes(code)) {
+        continue;
+      }
+      const page = await this._browser.newPage();
+      try {
+        const completeUrl = `${url}=${code}`;
+        console.log(completeUrl);
+        await page.goto(completeUrl, { timeout: 0 });
+        await page.waitForSelector('embed');
+        const response = await axios({
+          method: 'get',
+          url,
+          responseType: 'stream'
+        });
+        newInvoices.push({
+          ...invoice,
+          '0': response,
+          code
+        });
+        console.log('document:', count++);
+      } catch (e) {
+        console.error(e)
+      } finally {
+        await page.close();
+      }
+      if (this._limit && this._limit < count) {
+        break;
+      }
+    }
+    return newInvoices;
+  },
   async scrapeBusiness(page) {
     let continueVar = false;
     let data = [];
@@ -106,6 +151,7 @@ const scraperObj = {
       }
       data = data.concat(newData);
     } while (continueVar);
+    data = await this.scrapeDocuments(data);
     return data;
   },
   async getID(page) {
@@ -319,8 +365,10 @@ const scraperObj = {
   },
   async scraper({ browser, ...params }) {
     let data = [];
+    this._browser = browser;
+    this._limit = params.limit;
+    this._ignore = params.ignore || [];
     const page = await this.login((await browser.newPage()), params);
-
     if (page.url().includes('Portal001/mipeAdmin')) {
       const id = await this.getID(page);
       console.log('scraping unico', id)
@@ -344,7 +392,7 @@ const startBrowser = async () => {
   try {
     console.log("Iniciando proceso, por favor espere...");
     browser = await puppeteer.launch({
-      headless: true,
+      headless: !process.env.TEST,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       'ignoreHTTPSErrors': true,
       timeout: 60000,
@@ -355,15 +403,19 @@ const startBrowser = async () => {
   return browser;
 }
 
-const scrapeAll = async ({ rut: username, clave: password, url }) => {
+const scrapeAll = async ({ rut: username, clave: password, url, ...params }) => {
   let browser;
+  let limit = null;
+  if (process.env.TEST) limit = 10;
   try {
     browser = await startBrowser();
     const result = await scraperObj.scraper({
       browser,
       username,
       password,
-      url
+      url,
+      limit,
+      ...params
     });
     browser.close();
     return result;

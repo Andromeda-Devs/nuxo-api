@@ -20,8 +20,8 @@
       "collection": "emit"
     },
     "receiveds": {
-      "collection": "received",
-      "via": "enterprise"
+      "via": "enterprise",
+      "collection": "received"
     },
     "enterpriseRut": {
       "type": "string"

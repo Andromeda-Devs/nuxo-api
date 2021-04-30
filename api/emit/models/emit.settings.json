@@ -35,6 +35,10 @@
     },
     "state": {
       "type": "string"
+    },
+    "code": {
+      "type": "string",
+      "unique": true
     }
   }
 }

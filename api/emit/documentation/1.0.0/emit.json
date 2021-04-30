@@ -1007,6 +1007,9 @@
           "state": {
             "type": "string"
           },
+          "code": {
+            "type": "string"
+          },
           "published_at": {
             "type": "string",
             "format": "date-time"
@@ -1038,6 +1041,9 @@
             "type": "integer"
           },
           "state": {
+            "type": "string"
+          },
+          "code": {
             "type": "string"
           },
           "published_at": {

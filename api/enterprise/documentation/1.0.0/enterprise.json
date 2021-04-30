@@ -600,6 +600,9 @@
                 "state": {
                   "type": "string"
                 },
+                "code": {
+                  "type": "string"
+                },
                 "published_at": {
                   "type": "string"
                 },
@@ -644,6 +647,9 @@
                   "type": "integer"
                 },
                 "state": {
+                  "type": "string"
+                },
+                "code": {
                   "type": "string"
                 },
                 "published_at": {

@@ -27,49 +27,56 @@ const find = async (ctx) => {
 }
 
 const createTicket = async (ctx) => {
-  const { id } = ctx.state.user;
-  const rut = await strapi.query('rut').findOne({ user: id, favorite: true});
-  await eboleta.login({
-      ...rut,
-      user: rut.rut,
-  }); 
-  const url = await eboleta.emitTicket({
-      ...ctx.request.body
-  });  
+  const { body } = ctx.request;
+  const { id: user } = ctx.state.user;
+  const rut = await strapi.query('rut').findOne({ user, favorite: true });
+
+  await eboleta.login({ ...rut, user: rut.rut });
+
+  const url = await eboleta.emitTicket(body);
+
   let stringSplit = url.split("_");
-  const folio = stringSplit[1].slice(5,stringSplit[1].length) + '.pdf';
+  const folio = stringSplit[1].slice(5, stringSplit[1].length) + '.pdf';
+
   const path = `public/uploads/first_${folio}`;
+
   const response = await axios({
-      method: 'get',
-      url,
-      responseType: 'stream'
-    })
+    method: 'get',
+    url,
+    responseType: 'stream'
+  })
+
   await response.data.pipe(fs.createWriteStream(path))
   await sleep(3000);
   const fileStat = fs.statSync(path);
+
   const ticket = await strapi.query("tickets").create({
     amount: ctx.request.body.amount,
-    user: id, 
-    name: folio,
+    user,
+    name: folio
   });
+
   await strapi.plugins.upload.services.upload.upload({
     data: {
       refId: ticket.id,
       ref: 'tickets',
-      field: 'document',
+      field: 'document'
     },
     files: {
       path,
       name: folio,
       type: 'application/pdf', // mime type
-      size: fileStat.size,
-    },
+      size: fileStat.size
+    }
   });
+
   fs.unlinkSync(path);
-  const ticketRes = await strapi.query("tickets").findOne({id:ticket.id});
+  const ticketRes = await strapi.query("tickets").findOne({ id: ticket.id });
+
   return ticketRes;
 }
+
 module.exports = {
-    createTicket,
-    find
+  createTicket,
+  find
 };
