@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "04/28/2021 5:07:17 PM"
+    "x-generation-date": "04/30/2021 6:01:58 PM"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -6185,6 +6185,9 @@
               }
             }
           },
+          "invoice": {
+            "type": "string"
+          },
           "user": {
             "required": [
               "id",
@@ -6254,6 +6257,9 @@
       "NewTickets": {
         "properties": {
           "name": {
+            "type": "string"
+          },
+          "invoice": {
             "type": "string"
           },
           "user": {
@@ -6563,6 +6569,9 @@
                   "items": {
                     "type": "string"
                   }
+                },
+                "invoice": {
+                  "type": "string"
                 },
                 "user": {
                   "type": "string"

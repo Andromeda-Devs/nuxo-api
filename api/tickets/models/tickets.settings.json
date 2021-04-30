@@ -25,6 +25,9 @@
       "plugin": "upload",
       "required": false
     },
+    "invoice":{
+      "type": "string"
+    },
     "user": {
       "plugin": "users-permissions",
       "model": "user",
