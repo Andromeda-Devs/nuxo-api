@@ -43,14 +43,15 @@ const createTicket = async (ctx) => {
   const folioExt = hash + '.pdf';
   const path = `/uploads/${folioExt}`
   const publicPath = `public${path}`;
-  const fileStat = await axios({
+  await axios({
       method: 'get',
       url,
       responseType: 'stream'
     }).then(function (response) {
       response.data.pipe(fs.createWriteStream(publicPath))
-      return fs.statSync(publicPath);
     });
+  await sleep(3000);
+  const fileStat =  fs.statSync(publicPath);
   const ticket = await strapi.query("tickets").create({
     amount: ctx.request.body.amount,
     user: id, 
