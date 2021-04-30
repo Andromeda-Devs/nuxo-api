@@ -2,6 +2,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const { eboleta } = require("../services/tickets");
+const { sanitizeEntity } = require('strapi-utils');
 /**
  * Read the documentation (https://strapi.io/documentation/developer-docs/latest/development/backend-customization.html#core-controllers)
  * to customize this controller
@@ -11,6 +12,18 @@ const sleep = (ms) => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+const find = async (ctx) => {
+  const { id: user } = ctx.state.user;
+
+  const tickets = await strapi.services.tickets.find({
+    user
+  });
+
+  return {
+    tickets: tickets.map(entity => sanitizeEntity(entity, { model: strapi.models.tickets }))
+  };
 }
 
 const createTicket = async (ctx) => {
@@ -57,5 +70,6 @@ const createTicket = async (ctx) => {
   return ticketRes;
 }
 module.exports = {
-    createTicket
+    createTicket,
+    find
 };
