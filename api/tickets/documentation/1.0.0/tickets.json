@@ -666,6 +666,9 @@
               }
             }
           },
+          "invoice": {
+            "type": "string"
+          },
           "user": {
             "required": [
               "id",
@@ -735,6 +738,9 @@
       "NewTickets": {
         "properties": {
           "name": {
+            "type": "string"
+          },
+          "invoice": {
             "type": "string"
           },
           "user": {
