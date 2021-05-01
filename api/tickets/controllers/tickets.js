@@ -76,7 +76,8 @@ const createTicket = async (ctx) => {
     field:'document',
     order:1
   }]);
-  return strapi.query("tickets").findOne({id:ticket.id});
+  const { document: [res] } = await strapi.query("tickets").findOne({id:ticket.id});
+  return res;
 }
 
 module.exports = {
