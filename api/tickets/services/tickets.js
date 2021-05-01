@@ -19,6 +19,7 @@ class Crawler {
         const { url } = config;
 
         this.url = url;
+        this._browser = null;
 
     }
 
@@ -27,11 +28,13 @@ class Crawler {
         const url = this.url;
 
         const browser = await puppeteer.launch({
-            headless: true,
+            headless: !process.env.TEST,
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
             'ignoreHTTPSErrors': true,
             timeout: 60000
         });
+
+        this._browser = browser;
 
         const context = await browser.defaultBrowserContext();
 
@@ -43,6 +46,10 @@ class Crawler {
 
         this._page = page;
 
+    }
+
+    async close() {
+        this._browser.close();
     }
 
     async pressDown(num) {
@@ -255,6 +262,10 @@ class Eboleta {
             url: this.url
         });
 
+    }
+
+    async close() {
+        this.crawler.close();
     }
 
     async login({

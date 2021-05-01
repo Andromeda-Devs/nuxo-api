@@ -37,6 +37,8 @@ const createTicket = async (ctx) => {
 
   const url = await eboleta.emitTicket(body);
 
+  await eboleta.close();
+
   let stringSplit = url.split("_");
   const folio = stringSplit[1].slice(5,stringSplit[1].length) 
   const hash = folio + uuid.v4();
@@ -54,7 +56,7 @@ const createTicket = async (ctx) => {
   const fileStat =  fs.statSync(publicPath);
   const ticket = await strapi.query("tickets").create({
     amount: ctx.request.body.amount,
-    user: id, 
+    user, 
     name: folio,
     invoice: folio,
   });
