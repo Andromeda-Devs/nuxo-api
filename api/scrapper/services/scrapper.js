@@ -98,36 +98,31 @@ const scraperObj = {
   async scrapeDocuments(invoices) {
     const newInvoices = [];
     let count = 0;
+    console.log(this._ignore);
     for (const invoice of invoices) {
       const code = invoice['0'].split('CODIGO=')[1].split('&')[0];
       const url = invoice['0'].includes('mipeGesDocEmi.cgi') ?
         this._documentBaseUrlSent :
         this._documentBaseUrlReceived;
-      if (this._ignore.includes(code)) {
-        continue;
+      if (!this._ignore.includes(code)) {
+        try {
+          const completeUrl = `${url}=${code}`;
+          const response = await axios({
+            method: 'get',
+            url: completeUrl,
+            responseType: 'stream'
+          });
+          newInvoices.push({
+            ...invoice,
+            '0': response,
+            code
+          });
+          console.log('document:', count++);
+        } catch (e) {
+          console.error(e)
+        }
       }
-      const page = await this._browser.newPage();
-      try {
-        const completeUrl = `${url}=${code}`;
-        console.log(completeUrl);
-        await page.goto(completeUrl, { timeout: 0 });
-        await page.waitForSelector('embed');
-        const response = await axios({
-          method: 'get',
-          url,
-          responseType: 'stream'
-        });
-        newInvoices.push({
-          ...invoice,
-          '0': response,
-          code
-        });
-        console.log('document:', count++);
-      } catch (e) {
-        console.error(e)
-      } finally {
-        await page.close();
-      }
+
       if (this._limit && this._limit < count) {
         break;
       }
@@ -403,17 +398,15 @@ const startBrowser = async () => {
   return browser;
 }
 
-const scrapeAll = async ({ rut: username, clave: password, url, ...params }) => {
+const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
   let browser;
-  let limit = null;
-  if (process.env.TEST) limit = 10;
+  let limit = (process.env.TEST) ? 10 : null;
   try {
     browser = await startBrowser();
     const result = await scraperObj.scraper({
       browser,
       username,
       password,
-      url,
       limit,
       ...params
     });
