@@ -9,7 +9,6 @@ const refreshData = async (resultScraping, data, table) => {
   const newdate = year + "/" + month + "/" + day;
 
   resultScraping.map(async (enterpriseHistory) => {
-
     let enterprise = await knex('enterprises').where({ 
       enterpriseRut: enterpriseHistory.rut, 
       rut: data.id 
@@ -53,6 +52,7 @@ const refreshEmits = async ({ data }) => {
       ignore: emits.map(_ => _.code),
       ...data 
     });
+    console.log(resultScraping)
     await refreshData(resultScraping, data, "emits");
   } catch (error) {
     console.log(error);

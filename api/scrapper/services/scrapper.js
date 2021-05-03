@@ -1,6 +1,8 @@
 'use strict';
 const puppeteer = require('puppeteer');
 const axios = require('axios');
+const uuid = require("uuid");
+const fs = require('fs');
 
 const scraperObj = {
   multiRoute: '',
@@ -98,7 +100,6 @@ const scraperObj = {
   async scrapeDocuments(invoices) {
     const newInvoices = [];
     let count = 0;
-    console.log(this._ignore);
     for (const invoice of invoices) {
       const code = invoice['0'].split('CODIGO=')[1].split('&')[0];
       const url = invoice['0'].includes('mipeGesDocEmi.cgi') ?
@@ -111,13 +112,17 @@ const scraperObj = {
             method: 'get',
             url: completeUrl,
             responseType: 'stream'
-          });
+          })
+          // .then(function (info) {
+          //   const path = uuid.v4();
+          //   info.data.pipe(fs.createWriteStream(`public/uploads/${path}.pdf`))
+          //   return path;
+          // });
           newInvoices.push({
             ...invoice,
             '0': response,
             code
           });
-          console.log('document:', count++);
         } catch (e) {
           console.error(e)
         }
