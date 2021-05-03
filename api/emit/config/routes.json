@@ -9,6 +9,30 @@
       }
     },
     {
+      "method": "GET",
+      "path": "/emits/count",
+      "handler": "emit.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/emits/:id",
+      "handler": "emit.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/emits",
+      "handler": "emit.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "POST",
       "path": "/emits/refresh",
       "handler": "emit.refresh",
@@ -49,25 +73,9 @@
       }
     },
     {
-      "method": "GET",
-      "path": "/emits/count",
-      "handler": "emit.count",
-      "config": {
-        "policies": []
-      }
-    },
-    {
-      "method": "GET",
-      "path": "/emits/:id",
-      "handler": "emit.findOne",
-      "config": {
-        "policies": []
-      }
-    },
-    {
       "method": "POST",
-      "path": "/emits",
-      "handler": "emit.create",
+      "path": "/emits/information-receiver-default",
+      "handler": "emit.documentReceiverDefault",
       "config": {
         "policies": []
       }

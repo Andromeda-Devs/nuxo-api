@@ -45,7 +45,7 @@ const emitAffectInvoice = async (ctx) => {
     });
     if (!rut) return null;
 
-    const url = await createAffectInvoice({
+    const data = await createAffectInvoice({
         ...rut,
         clave: rut.password,
         ...ctx.request.body
@@ -107,11 +107,23 @@ const documentReceiver = async (ctx) => {
     }, ctx.request.body.document);
 }
 
+const documentReceiverDefault = async (ctx) => {
+    const rut = process.env.DEFAULT_RUT;
+    const clave = process.env.DEFAULT_PASSWORD;
+    return getDocumentReceiver({
+        rut,
+        clave,
+        url: affectInvoice,
+        ...ctx.request.body
+    }, ctx.request.body.document);   
+}
+
 module.exports = {
     refresh,
     refreshAll,
     emitAffectInvoice,
     emitDispatchGuide,
     emitExemptInvoice,
-    documentReceiver
+    documentReceiver, 
+    documentReceiverDefault
 };
