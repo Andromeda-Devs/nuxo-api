@@ -1,6 +1,10 @@
 'use strict';
 const puppeteer = require('puppeteer');
 const axios = require('axios');
+const uuid = require("uuid");
+const fs = require('fs');
+const { sleep } = require("../../../utils");
+
 
 const scraperObj = {
   multiRoute: '',
@@ -112,9 +116,11 @@ const scraperObj = {
             url: completeUrl,
             responseType: 'stream'
           });
+          response.data.pipe(fs.createWriteStream(`public/uploads/${code}.pdf`));
+          await sleep(3000);
           newInvoices.push({
             ...invoice,
-            '0': response,
+            '0': code,
             code
           });
           console.log('document:', count++);

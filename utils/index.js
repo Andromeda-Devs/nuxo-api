@@ -10,8 +10,15 @@ const affectInvoice = 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoR
 const exemptInvoice = 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoRutClave.html?https://www1.sii.cl/cgi-bin/Portal001/mipeSelEmpresa.cgi?DESDE_DONDE_URL=OPCION%3D34%26TIPO%3D4';
 const dispatchGuide = 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoRutClave.html?https://www1.sii.cl/cgi-bin/Portal001/mipeSelEmpresa.cgi?DESDE_DONDE_URL=OPCION%3D52%26TIPO%3D4';
 
+const sleep = (ms) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+}
+
 module.exports =  { 
     getDate, 
+    sleep,
     affectInvoice,
     exemptInvoice,
     dispatchGuide
