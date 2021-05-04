@@ -111,12 +111,13 @@ const scraperObj = {
       if (!this._ignore.includes(code)) {
         try {
           const completeUrl = `${url}=${code}`;
-          const response = await axios({
+          await axios({
             method: 'get',
-            url: completeUrl,
+            url:completeUrl,
             responseType: 'stream'
+          }).then(function (info) {
+            return info.data.pipe(fs.createWriteStream(`public/uploads/${code}.pdf`));
           });
-          response.data.pipe(fs.createWriteStream(`public/uploads/${code}.pdf`));
           await sleep(3000);
           newInvoices.push({
             ...invoice,

@@ -7,13 +7,11 @@ const refreshData = async (resultScraping, data, table) => {
   var day = dateObj.getUTCDate();
   var year = dateObj.getUTCFullYear();
   const newdate = year + "/" + month + "/" + day;
-
   resultScraping.map(async (enterpriseHistory) => {
     let enterprise = await knex('enterprises').where({ 
       enterpriseRut: enterpriseHistory.rut, 
       rut: data.id 
     }).first();
-
     if (!enterprise) {
       enterprise = await knex('enterprises').insert([{
         rut: data.id,
