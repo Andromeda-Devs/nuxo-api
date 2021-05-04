@@ -106,18 +106,21 @@ const scraperObj = {
     for (const invoice of invoices) {
       const code = invoice['0'].split('CODIGO=')[1].split('&')[0];
       const url = invoice['0'].includes('mipeGesDocEmi.cgi') ?
-        this._documentBaseUrlSent :
+      this._documentBaseUrlSent :
         this._documentBaseUrlReceived;
       if (!this._ignore.includes(code)) {
+        const page = await this._browser.newPage();
         try {
           const completeUrl = `${url}=${code}`;
-          const response = await axios({
-            method: 'get',
-            url: completeUrl,
-            responseType: 'stream'
-          });
-          response.data.pipe(fs.createWriteStream(`public/uploads/${code}.pdf`));
-          await sleep(3000);
+          await page.goto(completeUrl);
+          await page.waitForTimeout(3000);
+          // const response = await axios({
+          //   method: 'get',
+          //   url: completeUrl,
+          //   responseType: 'stream'
+          // });
+          // response.data.pipe(fs.createWriteStream(`public/uploads/${code}.pdf`));
+          // await sleep(1000);
           newInvoices.push({
             ...invoice,
             '0': code,
@@ -127,8 +130,8 @@ const scraperObj = {
         } catch (e) {
           console.error(e)
         }
+        await page.close();
       }
-
       if (this._limit && this._limit < count) {
         break;
       }
@@ -151,6 +154,7 @@ const scraperObj = {
         continueVar = false;
       }
       data = data.concat(newData);
+      if(process.env.TEST) break;
     } while (continueVar);
     data = await this.scrapeDocuments(data);
     return data;
