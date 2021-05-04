@@ -12,12 +12,12 @@
   },
   "attributes": {
     "rut": {
-      "via": "enterprises",
-      "model": "rut"
+      "model": "rut",
+      "via": "enterprises"
     },
     "emits": {
-      "via": "enterprise",
-      "collection": "emit"
+      "collection": "emit",
+      "via": "enterprise"
     },
     "receiveds": {
       "via": "enterprise",
@@ -25,6 +25,15 @@
     },
     "enterpriseRut": {
       "type": "string"
+    },
+    "document": {
+      "collection": "file",
+      "via": "related",
+      "allowedTypes": [
+        "files"
+      ],
+      "plugin": "upload",
+      "required": false
     }
   }
 }

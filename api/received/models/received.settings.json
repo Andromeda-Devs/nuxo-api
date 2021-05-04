@@ -21,9 +21,6 @@
     "businessName": {
       "type": "string"
     },
-    "document": {
-      "type": "string"
-    },
     "invoice": {
       "type": "string"
     },
@@ -39,6 +36,15 @@
     "code": {
       "type": "string",
       "unique": true
+    },
+    "document": {
+      "collection": "file",
+      "via": "related",
+      "allowedTypes": [
+        "files"
+      ],
+      "plugin": "upload",
+      "required": false
     }
   }
 }

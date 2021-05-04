@@ -25,9 +25,7 @@ const refreshData = async (resultScraping, data, table) => {
       }
     }
     const info = enterpriseHistory.data.map((item) => {
-    
       return {
-        //  url: item[0], 
         published_at: newdate,
         rut: item[1],
         businessName: item[2],
@@ -50,7 +48,6 @@ const refreshEmits = async ({ data }) => {
     const emits = await strapi.services.emit.find();
     const resultScraping = await getEmited({ 
       ignore: emits.map(_ => _.code),
-      limit:1,
       ...data 
     });
     console.log(resultScraping)

@@ -12,8 +12,8 @@
   },
   "attributes": {
     "enterprise": {
-      "model": "enterprise",
-      "via": "emits"
+      "via": "emits",
+      "model": "enterprise"
     },
     "rut": {
       "type": "string"

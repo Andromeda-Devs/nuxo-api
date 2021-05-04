@@ -21,8 +21,8 @@
       "required": true
     },
     "enterprises": {
-      "collection": "enterprise",
-      "via": "rut"
+      "via": "rut",
+      "collection": "enterprise"
     },
     "user": {
       "via": "ruts",
