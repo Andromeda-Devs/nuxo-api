@@ -4,7 +4,6 @@ const { createAffectInvoice, createDispatchGuide, createExemptInvoice, getDocume
 const { affectInvoice, exemptInvoice, dispatchGuide } = require("../../../utils");
 
 const refresh = async (ctx) => {
-
     const rut = await strapi.query('rut').findOne({
         rut: ctx.request.body.rut, favorite: true
     });
