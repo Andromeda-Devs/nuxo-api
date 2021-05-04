@@ -4,7 +4,7 @@ const Queue = require("bull");
 
 const refreshInformationEmits = new Queue("STRAPI/REFRESH_INFORMATION_EMITS", redisConnection, {
   limiter: {
-    max: 10,
+    max: 1,
   },
 });
 
@@ -12,7 +12,7 @@ refreshInformationEmits.process(refreshEmits);
 
 const refreshInformationReceived = new Queue("STRAPI/REFRESH_INFORMATION_RECEIVED", redisConnection, {
   limiter: {
-    max: 10,
+    max: 1,
   },
 });
 
