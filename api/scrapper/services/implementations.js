@@ -24,8 +24,8 @@ const refreshData = async (resultScraping, data, table) => {
         id: enterprise[0]
       }
     }
-
     const info = enterpriseHistory.data.map((item) => {
+    
       return {
         //  url: item[0], 
         published_at: newdate,
@@ -41,7 +41,7 @@ const refreshData = async (resultScraping, data, table) => {
       }
     });
 
-    await knex(table).insert(info);
+   await knex(table).insert(info);
   });
 }
 
@@ -50,6 +50,7 @@ const refreshEmits = async ({ data }) => {
     const emits = await strapi.services.emit.find();
     const resultScraping = await getEmited({ 
       ignore: emits.map(_ => _.code),
+      limit:1,
       ...data 
     });
     console.log(resultScraping)
