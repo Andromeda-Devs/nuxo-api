@@ -1,6 +1,7 @@
 'use strict';
 const puppeteer = require('puppeteer-extra')
 const { sleep } = require("../../../utils");
+const path = require("path");
 
 puppeteer.use(require('puppeteer-extra-plugin-user-preferences')({userPrefs: {
   download: {
@@ -115,51 +116,24 @@ const scraperObj = {
         this._documentBaseUrlReceived;
       if (!this._ignore.includes(code)) {
         const page = await this._browser.newPage();
+        await page.goto(invoice['0']);
+        const downloadPath = path.join(__dirname, `../../../public/uploads/${code}`)
+        await page._client.send('Page.setDownloadBehavior', {
+          behavior: 'allow',
+          downloadPath
+        });
         try {
           const completeUrl = `${url}=${code}`;
+          newInvoices.push({
+            ...invoice,
+            '0': code,
+            code,
+            path: downloadPath
+          });
+          console.log(completeUrl);
           await page.goto(completeUrl);
-          await sleep(5000)
-          await page.waitForTimeout(3000);
-          console.log(`${url}=${code}`);
-          // await page._client.send('Page.setDownloadBehavior', {
-          //   behavior: 'allow',
-          //   downloadPath: `./public/uploads/${code}.pdf`,
-          // });
-          // const data = await page.click('form[name="telechargementForm"] input[name="btConfirmer"]');
-          // console.log(data);
-          // await page._client.send('Page.setDownloadBehavior', {behavior: 'allow', downloadPath: `./${code}`});
-          // await sleep(5000)
-          // const response = await axios({
-          //   method: 'get',
-          //   url: completeUrl,
-          //   responseType: 'stream'
-          // });
-          // response.data.pipe(fs.createWriteStream(`public/uploads/${code}.pdf`));
-          // await axios({
-          //   method: 'get',
-          //   url,
-          //   responseType: 'stream',
-          //   headers: {
-          //     "accept": 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp, */*;q=0.8',
-          //     'cache-control': 'no-cache',
-          //     "pragma": 'no-cache',
-          //     'sec-fetch-mode': 'navigate',
-          //     'sec-fetch-site': 'same-site',
-          //     'upgrade-insecure-requests': '1'
-          //   },
-          // }).then(function (response) {
-          //   response.data.pipe(fs.createWriteStream(`public/uploads/${code}.pdf`))
-          // });
-          // await sleep(1000);
-          // newInvoices.push({
-          //   ...invoice,
-          //   '0': code,
-          //   code
-          // });
-
-          console.log('document:', count++);
         } catch (e) {
-          console.error(e)
+          console.log('document: ', count++);
         }
         await page.close();
       }
@@ -167,6 +141,7 @@ const scraperObj = {
         break;
       }
     }
+    await sleep(60000);
     return newInvoices;
   },
   async scrapeBusiness(page) {
@@ -428,7 +403,7 @@ const startBrowser = async () => {
   try {
     console.log("Iniciando proceso, por favor espere...");
     browser = await puppeteer.launch({
-      headless: true,//!process.env.TEST,
+      headless: !process.env.TEST,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       'ignoreHTTPSErrors': true,
       timeout: 60000,
