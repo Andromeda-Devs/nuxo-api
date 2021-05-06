@@ -1,3 +1,5 @@
+const fs = require('fs');
+const uuid = require("uuid");
 const { knex } = require("../../../constants");
 const { getEmited, getReceived } = require("./scrapper");
 
@@ -22,22 +24,68 @@ const refreshData = async (resultScraping, data, table) => {
         id: enterprise[0]
       }
     }
-    const info = enterpriseHistory.data.map((item) => {
-      return {
-        published_at: newdate,
-        rut: item[1],
-        businessName: item[2],
-        document: item[3],
-        invoice: item[4],
-        date: item[5],
-        amount: item[6],
-        state: item[7],
-        enterprise: enterprise.id,
-        code: item.code
-      }
-    });
+    let info = enterpriseHistory.data.map( (item) => {
+      let fileExist = false;
+      try {
+        fs.readdirSync(`public/uploads/${item.code}`).forEach(file => {
+          if(file)
+            fileExist = true;
+        });
+        if(!fileExist) return null;
+        return {
+          published_at: newdate,
+          rut: item[1],
+          businessName: item[2],
+          document: item[3],
+          invoice: item[4],
+          date: item[5],
+          amount: item[6],
+          state: item[7],
+          enterprise: enterprise.id,
+          code: item.code
+        }
 
-   await knex(table).insert(info);
+      } catch (error) {
+        return null;
+      }
+  });
+  info =  info.filter((item)=>{
+    return item !== null;
+  });
+  await knex(table).insert(info);
+  const documents = info.map((item)=>{
+    let documentName;
+    fs.readdirSync(`public/uploads/${item.code}`).forEach(file => {
+      documentName = file
+    }); 
+    return {
+      code:item.code, 
+      name:documentName
+    }
+  });
+  await documents.map(async (item) =>{
+    let {name, code} = item;
+    const path = `/uploads/${code}/${name}`
+    const publicPath = `public${path}`;
+    const fileStat =  fs.statSync(publicPath);
+    const document = await knex("upload_file").insert([{
+      name, 
+      hash:name, 
+      ext: '.pdf', 
+      size: fileStat.size,
+      url:path,
+      provider:'local', 
+      mime:'application/pdf'
+    }]);
+    const data = await knex(table).where({code}).first();
+    await knex('upload_file_morph').insert([{
+      upload_file_id:document[0], 
+      related_id: data.id,
+      related_type:table,
+      field:'document',
+      order:1
+    }]);
+  })
   });
 }
 
@@ -46,9 +94,9 @@ const refreshEmits = async ({ data }) => {
     const emits = await strapi.services.emit.find();
     const resultScraping = await getEmited({ 
       ignore: emits.map(_ => _.code),
+      limit:1,
       ...data 
     });
-    console.log(resultScraping)
     await refreshData(resultScraping, data, "emits");
   } catch (error) {
     console.log(error);

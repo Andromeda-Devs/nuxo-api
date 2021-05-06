@@ -1,7 +1,7 @@
 'use strict';
 const puppeteer = require('puppeteer-extra')
-const { sleep } = require("../../../utils");
 const path = require("path");
+const { sleep } = require("../../../utils");
 
 puppeteer.use(require('puppeteer-extra-plugin-user-preferences')({userPrefs: {
   download: {
