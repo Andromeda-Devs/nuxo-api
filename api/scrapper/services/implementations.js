@@ -94,7 +94,6 @@ const refreshEmits = async ({ data }) => {
     const emits = await strapi.services.emit.find();
     const resultScraping = await getEmited({ 
       ignore: emits.map(_ => _.code),
-      limit:1,
       ...data 
     });
     await refreshData(resultScraping, data, "emits");
@@ -105,7 +104,11 @@ const refreshEmits = async ({ data }) => {
 
 const refreshReceived = async ({ data }) => {
   try {
-    const resultScraping = await getReceived({ ...data });
+    const received = await strapi.services.received.find();
+    const resultScraping = await getReceived({ 
+      ignore: received.map(_ => _.code),
+      ...data 
+    });
     await refreshData(resultScraping, data, "receiveds");
   } catch (error) {
     console.log(error);
