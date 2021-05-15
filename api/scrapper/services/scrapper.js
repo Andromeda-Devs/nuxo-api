@@ -137,8 +137,7 @@ const scraperObj = {
         }
         await page.close();
       }
-      // if (this._limit && this._limit < count) {
-      if (count >= 10) {
+      if (this._limit && this._limit < count) {
         break;
       }
     }
