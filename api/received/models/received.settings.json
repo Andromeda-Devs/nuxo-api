@@ -8,7 +8,7 @@
   "options": {
     "increments": true,
     "timestamps": true,
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "enterprise": {
@@ -39,6 +39,20 @@
     },
     "document": {
       "collection": "file",
+      "via": "related",
+      "allowedTypes": [
+        "files"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "products": {
+      "type": "component",
+      "repeatable": true,
+      "component": "document.products"
+    },
+    "file": {
+      "model": "file",
       "via": "related",
       "allowedTypes": [
         "files"

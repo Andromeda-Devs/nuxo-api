@@ -8,12 +8,12 @@
   "options": {
     "increments": true,
     "timestamps": true,
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "attributes": {
     "enterprise": {
-      "via": "emits",
-      "model": "enterprise"
+      "model": "enterprise",
+      "via": "emits"
     },
     "rut": {
       "type": "string"
@@ -39,6 +39,20 @@
     "code": {
       "type": "string",
       "unique": true
+    },
+    "products": {
+      "type": "component",
+      "repeatable": true,
+      "component": "document.products"
+    },
+    "file": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "files"
+      ],
+      "plugin": "upload",
+      "required": false
     }
   }
 }

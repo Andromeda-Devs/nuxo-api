@@ -16,8 +16,8 @@
       "via": "enterprises"
     },
     "emits": {
-      "collection": "emit",
-      "via": "enterprise"
+      "via": "enterprise",
+      "collection": "emit"
     },
     "receiveds": {
       "via": "enterprise",

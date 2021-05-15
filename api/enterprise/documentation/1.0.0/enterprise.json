@@ -603,7 +603,10 @@
                 "code": {
                   "type": "string"
                 },
-                "published_at": {
+                "products": {
+                  "type": "component"
+                },
+                "file": {
                   "type": "string"
                 },
                 "created_by": {
@@ -655,7 +658,10 @@
                     "type": "string"
                   }
                 },
-                "published_at": {
+                "products": {
+                  "type": "component"
+                },
+                "file": {
                   "type": "string"
                 },
                 "created_by": {

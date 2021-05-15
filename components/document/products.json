@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_document_products",
+  "info": {
+    "name": "products",
+    "icon": "apple-alt"
+  },
+  "options": {},
+  "attributes": {
+    "code": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "integer"
+    },
+    "price": {
+      "type": "decimal"
+    }
+  }
+}

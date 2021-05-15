@@ -3,14 +3,16 @@ const puppeteer = require('puppeteer-extra')
 const path = require("path");
 const { sleep } = require("../../../utils");
 
-puppeteer.use(require('puppeteer-extra-plugin-user-preferences')({userPrefs: {
-  download: {
-    prompt_for_download: false,
- },
- plugins: {
-   always_open_pdf_externally: true // this should do the trick
- }
-}}));
+puppeteer.use(require('puppeteer-extra-plugin-user-preferences')({
+  userPrefs: {
+    download: {
+      prompt_for_download: false,
+    },
+    plugins: {
+      always_open_pdf_externally: true // this should do the trick
+    }
+  }
+}));
 
 const scraperObj = {
   multiRoute: '',
@@ -108,15 +110,13 @@ const scraperObj = {
   async scrapeDocuments(invoices) {
     const newInvoices = [];
     let count = 0;
-    console.log(this._ignore);
     for (const invoice of invoices) {
       const code = invoice['0'].split('CODIGO=')[1].split('&')[0];
       const url = invoice['0'].includes('mipeGesDocEmi.cgi') ?
-      this._documentBaseUrlSent :
+        this._documentBaseUrlSent :
         this._documentBaseUrlReceived;
       if (!this._ignore.includes(code)) {
         const page = await this._browser.newPage();
-        await page.goto(invoice['0']);
         const downloadPath = path.join(__dirname, `../../../public/uploads/${code}`)
         await page._client.send('Page.setDownloadBehavior', {
           behavior: 'allow',
@@ -137,11 +137,13 @@ const scraperObj = {
         }
         await page.close();
       }
-      if (this._limit && this._limit < count) {
+      // if (this._limit && this._limit < count) {
+      if (count >= 10) {
         break;
       }
     }
-    await sleep(60000);
+    await sleep(10000);
+    console.log('finish');
     return newInvoices;
   },
   async scrapeBusiness(page) {
@@ -160,7 +162,7 @@ const scraperObj = {
         continueVar = false;
       }
       data = data.concat(newData);
-      if(process.env.TEST) break;
+      if (process.env.TEST) break;
     } while (continueVar);
     data = await this.scrapeDocuments(data);
     return data;
@@ -417,21 +419,25 @@ const startBrowser = async () => {
 const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
   let browser;
   let limit = (process.env.TEST) ? 10 : null;
-  try {
-    browser = await startBrowser();
-    const result = await scraperObj.scraper({
-      browser,
-      username,
-      password,
-      limit,
-      ...params
-    });
-    browser.close();
-    return result;
-  }
-  catch (err) {
-    browser.close();
-    throw err;
+  let tries = 0;
+  while (tries < 3){
+    try {
+      browser = await startBrowser();
+      const result = await scraperObj.scraper({
+        browser,
+        username,
+        password,
+        limit,
+        ...params
+      });
+      browser.close();
+      return result;
+    }
+    catch (err) {
+      browser.close();
+      if (++tries === 3)
+        throw err;
+    }
   }
 }
 
