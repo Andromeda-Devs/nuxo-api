@@ -44,7 +44,7 @@ const emitAffectInvoice = async (ctx) => {
     });
     if (!rut) return null;
 
-    const data = await createAffectInvoice({
+    const url = await createAffectInvoice({
         ...rut,
         clave: rut.password,
         ...ctx.request.body
