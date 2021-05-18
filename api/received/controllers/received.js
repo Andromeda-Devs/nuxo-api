@@ -1,6 +1,7 @@
 'use strict';
 
 const { refreshInformationReceived }  = require("../../../workers");
+const { sanitizeEntity } = require('strapi-utils');
 
 const refresh = async (ctx) => {
     const rut = await strapi.query('rut').findOne({ 
@@ -26,7 +27,23 @@ const refreshAll = async (ctx) => {
     return { message:"process in progress" };
 }
 
+const find = async (ctx) => {
+    const { 
+        state: { user: { id: user } },
+        query
+    } = ctx;
+    let entities;
+    if (query._q) {
+        entities = await strapi.services.received.search({ ...query, user });
+    } else {
+        entities = await strapi.services.received.find({ ...query, user });
+    }
+
+    return entities.map(entity => sanitizeEntity(entity, { model: strapi.models.received }));
+}
+
 module.exports = {
     refresh, 
-    refreshAll
+    refreshAll,
+    find
 };

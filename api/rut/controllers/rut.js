@@ -4,6 +4,8 @@
  * to customize this controller
  */
 
+const { sanitizeEntity } = require('strapi-utils');
+
 const createRut = async (ctx) =>{ 
     const {id } = ctx.state.user;
     let payload = {
@@ -30,7 +32,14 @@ const createRut = async (ctx) =>{
     return createdRut;
 }
 
+const find = async (ctx) => {
+    const { user: {id: user} } = ctx.state;
+    const ruts = await strapi.query('rut').find({user});
+
+    return ruts.map(entity => sanitizeEntity(entity, {model: strapi.models.rut}))
+}
 
 module.exports = {
     createRut,
+    find
 };

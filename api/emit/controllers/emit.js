@@ -3,6 +3,21 @@ const { refreshInformationEmits } = require("../../../workers");
 const { createAffectInvoice, createDispatchGuide, createExemptInvoice, getDocumentReceiver } = require("../../scrapper/services/scrapper");
 const { affectInvoice, exemptInvoice, dispatchGuide } = require("../../../utils");
 
+const find = async (ctx) => {
+    const {
+        state: { user: { id: user } },
+        query
+    } = ctx;
+    let entities;
+    if (query._q) {
+        entities = await strapi.services.emit.search({ ...query, user });
+    } else {
+        entities = await strapi.services.emit.find({ ...query, user });
+    }
+
+    return entities.map(entity => sanitizeEntity(entity, { model: strapi.models.emit }));
+}
+
 const refresh = async (ctx) => {
     const rut = await strapi.query('rut').findOne({
         rut: ctx.request.body.rut, favorite: true
