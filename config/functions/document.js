@@ -75,6 +75,12 @@ async function updateData(id, name, entity) {
     });
 }
 
+const getCodes = async (entity) => {
+    const entities = await strapi.query(entity).find();
+    return entities.map(_ => _.code);
+}
+
 module.exports = {
-    updateData
+    updateData,
+    getCodes
 }

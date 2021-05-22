@@ -8,10 +8,30 @@ const refresh = async (ctx) => {
         rut : ctx.request.body.rut
     });
     if(!rut) return null;
+
+
+    const activeProcess = await strapi.query('process').findOne({
+        user: user.id,
+        status_in: ['ON_HOLD', 'PROCESSING'],
+        entity_relation: 'received'
+    });
+
+    if (activeProcess) {
+        return sanitizeEntity(activeProcess, {
+            model: strapi.models.process
+        });
+    }
+
+    const { user: _user, ...newProcess } = await strapi.query('process').create({
+        user,
+        entity_relation: 'received'
+    })
+
     refreshInformationReceived.add({
         ...rut,
         clave: rut.password,
-        });
+        processDocument: newProcess
+    });
     return {message:"process in progress"};
 }
 

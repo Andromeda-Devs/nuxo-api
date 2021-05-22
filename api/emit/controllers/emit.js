@@ -2,6 +2,7 @@
 const { refreshInformationEmits } = require("../../../workers");
 const { createAffectInvoice, createDispatchGuide, createExemptInvoice, getDocumentReceiver } = require("../../scrapper/services/scrapper");
 const { affectInvoice, exemptInvoice, dispatchGuide } = require("../../../utils");
+const { sanitizeEntity } = require('strapi-utils');
 
 const find = async (ctx) => {
     const {
@@ -19,6 +20,7 @@ const find = async (ctx) => {
 }
 
 const refresh = async (ctx) => {
+    const { user } = ctx.state;
     const rut = await strapi.query('rut').findOne({
         rut: ctx.request.body.rut, favorite: true
     });
@@ -28,13 +30,34 @@ const refresh = async (ctx) => {
     if (!rut.certificatePassword) {
         return ctx.badRequest({ message: "certificatePassword is null" });
     }
-    
+
+    const activeProcess = await strapi.query('process').findOne({
+        user: user.id,
+        status_in: ['ON_HOLD', 'PROCESSING'],
+        entity_relation: 'emit'
+    });
+
+    if (activeProcess) {
+        return sanitizeEntity(activeProcess, {
+            model: strapi.models.process
+        });
+    }
+
+
+    const {user: _user, ...newProcess} = await strapi.query('process').create({
+        user,
+        entity_relation: 'emit',
+    })
+
     refreshInformationEmits.add({
         ...rut,
         clave: rut.password,
+        processDocument: newProcess
     });
 
-    return { message: "process in progress" };
+    return sanitizeEntity(newProcess, {
+        model: strapi.models.process
+    });
 }
 
 const refreshAll = async (ctx) => {

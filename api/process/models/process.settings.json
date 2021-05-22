@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "processes",
+  "info": {
+    "name": "Process",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "ON_HOLD",
+        "PROCESSING",
+        "DONE",
+        "FAILED"
+      ],
+      "default": "ON_HOLD"
+    },
+    "entity_relation": {
+      "type": "string",
+      "required": false
+    },
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user",
+      "via": "processes"
+    },
+    "hash": {
+      "type": "uid",
+      "required": true
+    },
+    "log": {
+      "type": "json"
+    }
+  }
+}

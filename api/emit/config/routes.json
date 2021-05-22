@@ -39,15 +39,7 @@
       "config": {
         "policies": []
       }
-    },
-    {
-      "method": "POST",
-      "path": "/emits/refresh-all",
-      "handler": "emit.refreshAll",
-      "config": {
-        "policies": []
-      }
-    },   
+    }, 
     {
       "method": "POST",
       "path": "/emits/create-affect-invoice",

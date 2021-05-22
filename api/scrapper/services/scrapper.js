@@ -2,6 +2,8 @@
 const puppeteer = require('puppeteer-extra')
 const path = require("path");
 const { sleep } = require("../../../utils");
+const fs = require("fs");
+const { default: createStrapi } = require('strapi');
 
 puppeteer.use(require('puppeteer-extra-plugin-user-preferences')({
   userPrefs: {
@@ -107,33 +109,57 @@ const scraperObj = {
     });
     return data;
   },
-  async scrapeDocuments(invoices) {
+  async scrapeDocuments(invoices, params) {
     const newInvoices = [];
+    const { params: {refreshData, entity}, rut_id } = params;
+    const ignore = await strapi.config.functions.document.getCodes((entity.slice(0, entity.length-1)));
+    console.log(ignore)
     let count = 0;
     for (const invoice of invoices) {
       const code = invoice['0'].split('CODIGO=')[1].split('&')[0];
       const url = invoice['0'].includes('mipeGesDocEmi.cgi') ?
         this._documentBaseUrlSent :
         this._documentBaseUrlReceived;
-      if (!this._ignore.includes(code)) {
+      if (!ignore.includes(code)) {
         const page = await this._browser.newPage();
         const downloadPath = path.join(__dirname, `../../../public/uploads/${code}`)
         await page._client.send('Page.setDownloadBehavior', {
           behavior: 'allow',
           downloadPath
         });
+        const invoiceElement = {
+          ...invoice,
+          '0': code,
+          code,
+          path: downloadPath
+        }
         try {
           const completeUrl = `${url}=${code}`;
-          newInvoices.push({
-            ...invoice,
-            '0': code,
-            code,
-            path: downloadPath
-          });
+          // newInvoices.push(invoiceElement);
           console.log(completeUrl);
           await page.goto(completeUrl);
         } catch (e) {
           console.log('document: ', count++);
+          let done = false;
+          let time = 100;
+
+          const toRefresh = [
+            {
+              rut: rut_id,
+              data: [invoiceElement]
+            }
+          ]
+          do {
+            await sleep(100);
+            const fileExists = fs.existsSync(downloadPath + '/77022026.pdf');
+            if (fileExists) {
+              await refreshData(toRefresh, params.params, entity);
+              done = true;
+            } else if (time === 3000) {
+              break;
+            }
+            time += 100;
+          } while (!done);
         }
         await page.close();
       }
@@ -145,7 +171,7 @@ const scraperObj = {
     console.log('finish');
     return newInvoices;
   },
-  async scrapeBusiness(page) {
+  async scrapeBusiness(page, params) {
     let continueVar = false;
     let data = [];
     let iteration = 1;
@@ -163,14 +189,14 @@ const scraperObj = {
       data = data.concat(newData);
       if (process.env.TEST) break;
     } while (continueVar);
-    data = await this.scrapeDocuments(data);
+    data = await this.scrapeDocuments(data, params);
     return data;
   },
   async getID(page) {
     const id = await page.$eval('div div div > b', id => id.textContent);
     return id.split(';')[1].trim();
   },
-  async scrapeMulti(page) {
+  async scrapeMulti(page, params) {
     const data = [];
     const options = await page.$$eval(
       'select[name="RUT_EMP"] optgroup > option',
@@ -181,7 +207,7 @@ const scraperObj = {
       await page.click('button[type="submit"]');
       await page.waitForSelector('.container');
       const id = await this.getID(page);
-      const result = await this.scrapeBusiness(page);
+      const result = await this.scrapeBusiness(page, { ...params, rut_id: id });
       data.push({
         rut: id,
         data: result
@@ -379,12 +405,11 @@ const scraperObj = {
     let data = [];
     this._browser = browser;
     this._limit = params.limit;
-    this._ignore = params.ignore || [];
     const page = await this.login((await browser.newPage()), params);
     if (page.url().includes('Portal001/mipeAdmin')) {
       const id = await this.getID(page);
       console.log('scraping unico', id)
-      const result = await this.scrapeBusiness(page);
+      const result = await this.scrapeBusiness(page, { params, rut_id: id });
       data.push({
         rut: id,
         data: result
@@ -392,7 +417,7 @@ const scraperObj = {
     } else if (page.url().includes('mipeSelEmpresa')) {
       this.multiRoute = page.url();
       console.log('scraping multiple');
-      data = await this.scrapeMulti(page);
+      data = await this.scrapeMulti(page, params);
     }
 
     return data;
@@ -419,7 +444,11 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
   let browser;
   let limit = (process.env.TEST) ? 10 : null;
   let tries = 0;
-  while (tries < 3){
+  await strapi.query('process').update({id: params.processDocument.id}, {
+    ...params.processDocument,
+    status: 'PROCESSING'
+  });
+  while (tries < 3) {
     try {
       browser = await startBrowser();
       const result = await scraperObj.scraper({
@@ -434,10 +463,21 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
     }
     catch (err) {
       browser.close();
-      if (++tries === 3)
+      console.log(err);
+      if (++tries === 3){
+        await strapi.query('process').update({ id: params.processDocument.id }, {
+          ...params.processDocument,
+          status: 'FAILED',
+          log: err
+        });
         throw err;
+      }
     }
   }
+  await strapi.query('process').update(params.processDocument, {
+    ...params.processDocument,
+    status: 'DONE'
+  });
 }
 
 const createDocument = async ({ rut: username, clave: password, ...params }) => {

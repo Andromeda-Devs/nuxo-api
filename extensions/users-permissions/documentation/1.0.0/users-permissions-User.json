@@ -1337,6 +1337,47 @@
                 }
               }
             }
+          },
+          "processes": {
+            "type": "array",
+            "items": {
+              "required": [
+                "id",
+                "hash"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "ON_HOLD",
+                    "PROCESSING",
+                    "DONE",
+                    "FAILED"
+                  ]
+                },
+                "entity_relation": {
+                  "type": "string"
+                },
+                "user": {
+                  "type": "string"
+                },
+                "hash": {
+                  "type": "uid"
+                },
+                "log": {
+                  "type": "object"
+                },
+                "created_by": {
+                  "type": "string"
+                },
+                "updated_by": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -1386,6 +1427,12 @@
             }
           },
           "tickets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "processes": {
             "type": "array",
             "items": {
               "type": "string"

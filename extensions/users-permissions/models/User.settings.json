@@ -66,6 +66,10 @@
     "tickets": {
       "via": "user",
       "collection": "tickets"
+    },
+    "processes": {
+      "via": "user",
+      "collection": "process"
     }
   }
 }
