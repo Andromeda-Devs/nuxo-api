@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "05/21/2021 12:22:40 PM"
+    "x-generation-date": "05/26/2021 6:43:35 PM"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -567,7 +567,7 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "foo": {
+                    "message": {
                       "type": "string"
                     }
                   }
@@ -617,7 +617,7 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "foo": {
+                  "rut": {
                     "type": "string"
                   }
                 }
@@ -637,11 +637,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "properties": {
-                    "foo": {
-                      "type": "string"
-                    }
-                  }
+                  "properties": {}
                 }
               }
             }
@@ -688,8 +684,46 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "foo": {
+                  "rut": {
                     "type": "string"
+                  },
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "receiver": {
+                        "type": "object",
+                        "properties": {
+                          "rut": {
+                            "type": "object",
+                            "properties": {
+                              "rut": {
+                                "type": "string"
+                              },
+                              "dv": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "string"
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -708,11 +742,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "properties": {
-                    "foo": {
-                      "type": "string"
-                    }
-                  }
+                  "properties": {}
                 }
               }
             }
@@ -759,8 +789,46 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "foo": {
+                  "rut": {
                     "type": "string"
+                  },
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "receiver": {
+                        "type": "object",
+                        "properties": {
+                          "rut": {
+                            "type": "object",
+                            "properties": {
+                              "rut": {
+                                "type": "string"
+                              },
+                              "dv": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "string"
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -779,11 +847,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "properties": {
-                    "foo": {
-                      "type": "string"
-                    }
-                  }
+                  "properties": {}
                 }
               }
             }
@@ -830,8 +894,46 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "foo": {
+                  "rut": {
                     "type": "string"
+                  },
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "receiver": {
+                        "type": "object",
+                        "properties": {
+                          "rut": {
+                            "type": "object",
+                            "properties": {
+                              "rut": {
+                                "type": "string"
+                              },
+                              "dv": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "string"
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -851,8 +953,57 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "foo": {
+                    "rut": {
+                      "type": "object",
+                      "properties": {
+                        "rut": {
+                          "type": "string"
+                        },
+                        "dv": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "businessName": {
                       "type": "string"
+                    },
+                    "purchaseType": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "address": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "commune": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "concept": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "contact": {
+                      "type": "string"
+                    },
+                    "requestRut": {
+                      "type": "object",
+                      "properties": {
+                        "rut": {
+                          "type": "string"
+                        },
+                        "dv": {
+                          "type": "string"
+                        }
+                      }
                     }
                   }
                 }
@@ -901,8 +1052,26 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "foo": {
-                    "type": "string"
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "receiver": {
+                        "type": "object",
+                        "properties": {
+                          "rut": {
+                            "type": "object",
+                            "properties": {
+                              "rut": {
+                                "type": "string"
+                              },
+                              "dv": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -922,8 +1091,57 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "foo": {
+                    "rut": {
+                      "type": "object",
+                      "properties": {
+                        "rut": {
+                          "type": "string"
+                        },
+                        "dv": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "businessName": {
                       "type": "string"
+                    },
+                    "purchaseType": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "address": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "commune": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "concept": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "contact": {
+                      "type": "string"
+                    },
+                    "requestRut": {
+                      "type": "object",
+                      "properties": {
+                        "rut": {
+                          "type": "string"
+                        },
+                        "dv": {
+                          "type": "string"
+                        }
+                      }
                     }
                   }
                 }
@@ -972,8 +1190,29 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "foo": {
+                  "rut": {
                     "type": "string"
+                  },
+                  "document": {
+                    "type": "object",
+                    "properties": {
+                      "receiver": {
+                        "type": "object",
+                        "properties": {
+                          "rut": {
+                            "type": "object",
+                            "properties": {
+                              "rut": {
+                                "type": "string"
+                              },
+                              "dv": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -2269,7 +2508,7 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "foo": {
+                    "message": {
                       "type": "string"
                     }
                   }
@@ -2319,7 +2558,7 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "foo": {
+                  "rut": {
                     "type": "string"
                   }
                 }
@@ -3108,8 +3347,99 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "foo": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "rut": {
                       "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "username": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "password": {
+                          "type": "string"
+                        },
+                        "role": {
+                          "type": "integer"
+                        },
+                        "created_by": {
+                          "type": "integer"
+                        },
+                        "updated_by": {
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "favorite": {
+                      "type": "boolean"
+                    },
+                    "published_at": {
+                      "type": "string"
+                    },
+                    "created_by": null,
+                    "updated_by": null,
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    },
+                    "enterprises": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "rut": {
+                            "type": "string"
+                          },
+                          "emits": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "receiveds": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "enterpriseRut": {
+                            "type": "string"
+                          },
+                          "published_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "created_by": {
+                            "type": "string"
+                          },
+                          "updated_by": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -3157,11 +3487,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "properties": {
-                  "foo": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/NewRut"
               }
             }
           }

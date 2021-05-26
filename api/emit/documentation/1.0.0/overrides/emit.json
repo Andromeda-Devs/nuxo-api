@@ -1,0 +1,919 @@
+{
+  "paths": {
+    "/emits/refresh": {
+      "post": {
+        "deprecated": false,
+        "description": "Create a new record",
+        "responses": {
+          "200": {
+            "description": "response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Emit"
+        ],
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "rut": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emits/create-affect-invoice": {
+      "post": {
+        "deprecated": false,
+        "description": "Create a new record",
+        "responses": {
+          "200": {
+            "description": "response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {}
+                   
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Emit"
+        ],
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                  "properties": {
+                    "rut": {
+                    "type":"string"
+                    },
+                    "document":{
+                      "type":"object",
+                      "properties":{
+                        "receiver": {
+                          "type":"object",
+                          "properties":{
+                            "rut": {
+                              "type":"object",
+                              "properties":{
+                                "rut":{
+                                  "type":"string"
+                                },
+                                "dv": {
+                                  "type":"string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }, 
+                    "products":{
+                      "type":"array",
+                      "items":{
+                        "type": "object",
+                        "properties":{
+                          "name": {
+                            "type":"string"
+                          },
+                          "quantity": {
+                            "type":"string"
+                          },
+                          "price": {
+                            "type":"string"
+                          }
+                        }
+                      }
+                    }                      
+                  }
+                
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emits/create-exempt-invoice": {
+      "post": {
+        "deprecated": false,
+        "description": "Create a new record",
+        "responses": {
+          "200": {
+            "description": "response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {}
+                   
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Emit"
+        ],
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                  "properties": {
+                    "rut": {
+                    "type":"string"
+                    },
+                    "document":{
+                      "type":"object",
+                      "properties":{
+                        "receiver": {
+                          "type":"object",
+                          "properties":{
+                            "rut": {
+                              "type":"object",
+                              "properties":{
+                                "rut":{
+                                  "type":"string"
+                                },
+                                "dv": {
+                                  "type":"string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }, 
+                    "products":{
+                      "type":"array",
+                      "items":{
+                        "type": "object",
+                        "properties":{
+                          "name": {
+                            "type":"string"
+                          },
+                          "quantity": {
+                            "type":"string"
+                          },
+                          "price": {
+                            "type":"string"
+                          }
+                        }
+                      }
+                    }                      
+                  }
+                
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emits/create-dispatch-guide": {
+      "post": {
+        "deprecated": false,
+        "description": "Create a new record",
+        "responses": {
+          "200": {
+            "description": "response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {}
+                   
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Emit"
+        ],
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                  "properties": {
+                    "rut": {
+                    "type":"string"
+                    },
+                    "document":{
+                      "type":"object",
+                      "properties":{
+                        "receiver": {
+                          "type":"object",
+                          "properties":{
+                            "rut": {
+                              "type":"object",
+                              "properties":{
+                                "rut":{
+                                  "type":"string"
+                                },
+                                "dv": {
+                                  "type":"string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }, 
+                    "products":{
+                      "type":"array",
+                      "items":{
+                        "type": "object",
+                        "properties":{
+                          "name": {
+                            "type":"string"
+                          },
+                          "quantity": {
+                            "type":"string"
+                          },
+                          "price": {
+                            "type":"string"
+                          }
+                        }
+                      }
+                    }                      
+                  }
+                
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emits/information-receiver-default": {
+      "post": {
+        "deprecated": false,
+        "description": "Create a new record",
+        "responses": {
+          "200": {
+            "description": "response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "rut": {
+                      "type":"object",
+                      "properties":{
+                        "rut":{
+                          "type":"string"
+                        },
+                        "dv": {
+                          "type":"string"
+                        }
+                      }
+                    },
+                    "businessName": {
+                      "type":"string"
+                    },
+                    "purchaseType":{
+                      "type":"array",
+                      "items":{
+                        "type":"string"
+                      }
+                    },
+                    "address":{
+                      "type":"array",
+                      "items":{
+                        "type":"string"
+                      }
+                    },
+                    "commune": {
+                        "type":"string"
+                      },
+                    "city": {
+                        "type":"string"
+                      },
+                    "concept": {
+                      "type":"array",
+                      "items":{
+                        "type":"string"
+                      }
+                    },
+                    "contact":{
+                      "type":"string"
+                    },
+                    "requestRut":{
+                      "type":"object",
+                      "properties":{
+                          "rut": {
+                            "type":"string"
+                          },
+                          "dv": {
+                            "type":"string"
+                          }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Emit"
+        ],
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "document":{
+                    "type":"object",
+                    "properties":{
+                      "receiver": {
+                        "type":"object",
+                        "properties":{
+                          "rut": {
+                            "type":"object",
+                            "properties":{
+                              "rut":{
+                                "type":"string"
+                              },
+                              "dv": {
+                                "type":"string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/emits/information-receiver": {
+      "post": {
+        "deprecated": false,
+        "description": "Create a new record",
+        "responses": {
+          "200": {
+            "description": "response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "rut": {
+                      "type":"object",
+                      "properties":{
+                        "rut":{
+                          "type":"string"
+                        },
+                        "dv": {
+                          "type":"string"
+                        }
+                      }
+                    },
+                    "businessName": {
+                      "type":"string"
+                    },
+                    "purchaseType":{
+                      "type":"array",
+                      "items":{
+                        "type":"string"
+                      }
+                    },
+                    "address":{
+                      "type":"array",
+                      "items":{
+                        "type":"string"
+                      }
+                    },
+                    "commune": {
+                        "type":"string"
+                      },
+                    "city": {
+                        "type":"string"
+                      },
+                    "concept": {
+                      "type":"array",
+                      "items":{
+                        "type":"string"
+                      }
+                    },
+                    "contact":{
+                      "type":"string"
+                    },
+                    "requestRut":{
+                      "type":"object",
+                      "properties":{
+                          "rut": {
+                            "type":"string"
+                          },
+                          "dv": {
+                            "type":"string"
+                          }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": [
+          "Emit"
+        ],
+        "requestBody": {
+          "description": "",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "rut": {
+                  "type":"string"
+                  },
+                  "document":{
+                    "type":"object",
+                    "properties":{
+                      "receiver": {
+                        "type":"object",
+                        "properties":{
+                          "rut": {
+                            "type":"object",
+                            "properties":{
+                              "rut":{
+                                "type":"string"
+                              },
+                              "dv": {
+                                "type":"string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Emit": {
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "enterprise": {
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "rut": {
+                "type": "string"
+              },
+              "emits": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "receiveds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "enterpriseRut": {
+                "type": "string"
+              },
+              "document": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "published_at": {
+                "type": "string"
+              },
+              "created_by": {
+                "type": "string"
+              },
+              "updated_by": {
+                "type": "string"
+              }
+            }
+          },
+          "rut": {
+            "type": "string"
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "document": {
+            "type": "string"
+          },
+          "invoice": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "file": {
+            "required": [
+              "id",
+              "name",
+              "hash",
+              "mime",
+              "size",
+              "url",
+              "provider"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "alternativeText": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "string"
+              },
+              "width": {
+                "type": "integer"
+              },
+              "height": {
+                "type": "integer"
+              },
+              "formats": {
+                "type": "object"
+              },
+              "hash": {
+                "type": "string"
+              },
+              "ext": {
+                "type": "string"
+              },
+              "mime": {
+                "type": "string"
+              },
+              "size": {
+                "type": "number"
+              },
+              "url": {
+                "type": "string"
+              },
+              "previewUrl": {
+                "type": "string"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "provider_metadata": {
+                "type": "object"
+              },
+              "related": {
+                "type": "string"
+              },
+              "created_by": {
+                "type": "string"
+              },
+              "updated_by": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "NewEmit": {
+        "properties": {
+          "enterprise": {
+            "type": "string"
+          },
+          "rut": {
+            "type": "string"
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "document": {
+            "type": "string"
+          },
+          "invoice": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer"
+                },
+                "price": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "updated_by": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Emit"
+    }
+  ]
+}

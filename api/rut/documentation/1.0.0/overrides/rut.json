@@ -1,0 +1,360 @@
+{
+    "paths": {
+      "/ruts/create": {
+        "post": {
+            "deprecated": false,
+            "description": "Create a new record",
+            "responses": {
+              "200": {
+                "description": "response",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "properties":{
+                        "id": {
+                          "type":"integer"
+                        },
+                        "rut": {
+                          "type":"string"
+                        },
+                        "password": {
+                          "type":"string"
+                        },
+                        "user": {
+                          "type":"object",
+                          "properties":{
+                            "id": {
+                              "type":"integer"
+                            },
+                            "username": {
+                              "type":"string"
+                            },
+                            "email": {
+                              "type":"string"
+                            },
+                            "provider": {
+                              "type":"string"
+                            },
+                            "password": {
+                              "type":"string"
+                            },
+                            "role": {
+                              "type":"integer"
+                            },
+                            "created_by":{
+                              "type":"integer"
+                            }, 
+                            "updated_by": {
+                              "type":"integer"
+                            },
+                            "created_at": {
+                              "type":"string"
+                            },
+                            "updated_at": {
+                              "type":"string"
+                            }                          
+                          }
+                        },
+                        "favorite": {
+                          "type":"boolean"
+                        },
+                        "published_at": {
+                              "type":"string"
+                            },
+                        "created_by": null,
+                        "updated_by": null,
+                        "created_at": {
+                              "type":"string"
+                            },
+                        "updated_at":{
+                          "type":"string"
+                        },
+                        "enterprises": {
+                          "type":"array",
+                          "items":{
+                            "type":"object",
+                            "properties":{
+                              "rut": {
+                                "type": "string"
+                              },
+                              "emits": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "receiveds": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "enterpriseRut": {
+                                "type": "string"
+                              },
+                              "published_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "created_by": {
+                                "type": "string"
+                              },
+                              "updated_by": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "403": {
+                "description": "Forbidden",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  }
+                }
+              },
+              "404": {
+                "description": "Not found",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  }
+                }
+              },
+              "default": {
+                "description": "unexpected error",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  }
+                }
+              }
+            },
+            "summary": "",
+            "tags": [
+              "Rut"
+            ],
+            "requestBody": {
+              "description": "",
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "properties":{
+                      "rut":{
+                        "type":"string"
+                      }, 
+	                    "password":{
+                        "type":"string"
+                      }
+                    }   
+                  }
+                }
+              }
+            }
+          }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Rut": {
+          "required": [
+            "id",
+            "rut",
+            "password",
+            "certificatePassword",
+            "favorite"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "rut": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "enterprises": {
+              "type": "array",
+              "items": {
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "rut": {
+                    "type": "string"
+                  },
+                  "emits": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "receiveds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "enterpriseRut": {
+                    "type": "string"
+                  },
+                  "document": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "published_at": {
+                    "type": "string"
+                  },
+                  "created_by": {
+                    "type": "string"
+                  },
+                  "updated_by": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "user": {
+              "required": [
+                "id",
+                "username",
+                "email"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "provider": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "resetPasswordToken": {
+                  "type": "string"
+                },
+                "confirmationToken": {
+                  "type": "string"
+                },
+                "confirmed": {
+                  "type": "boolean"
+                },
+                "blocked": {
+                  "type": "boolean"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "ruts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "tickets": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "processes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "created_by": {
+                  "type": "string"
+                },
+                "updated_by": {
+                  "type": "string"
+                }
+              }
+            },
+            "certificatePassword": {
+              "type": "string"
+            },
+            "favorite": {
+              "type": "boolean",
+              "default": false
+            },
+            "published_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "NewRut": {
+          "required": [
+            "rut",
+            "password",
+            "certificatePassword",
+            "favorite"
+          ],
+          "properties": {
+            "rut": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "enterprises": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "user": {
+              "type": "string"
+            },
+            "certificatePassword": {
+              "type": "string"
+            },
+            "favorite": {
+              "type": "boolean",
+              "default": false
+            },
+            "published_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "created_by": {
+              "type": "string"
+            },
+            "updated_by": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "tags": [
+      {
+        "name": "Rut"
+      }
+    ]
+  }
