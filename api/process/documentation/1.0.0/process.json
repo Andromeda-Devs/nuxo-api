@@ -604,6 +604,9 @@
           },
           "log": {
             "type": "object"
+          },
+          "rut": {
+            "type": "string"
           }
         }
       },
@@ -633,6 +636,9 @@
           },
           "log": {
             "type": "object"
+          },
+          "rut": {
+            "type": "string"
           },
           "created_by": {
             "type": "string"

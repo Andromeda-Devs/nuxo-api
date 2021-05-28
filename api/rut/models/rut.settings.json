@@ -18,20 +18,22 @@
     },
     "password": {
       "type": "string",
-      "required": true
+      "required": true,
+      "private": true
     },
     "enterprises": {
-      "via": "rut",
-      "collection": "enterprise"
+      "collection": "enterprise",
+      "via": "rut"
     },
     "user": {
-      "via": "ruts",
       "plugin": "users-permissions",
-      "model": "user"
+      "model": "user",
+      "via": "ruts"
     },
     "certificatePassword": {
       "type": "string",
-      "required": true
+      "required": true,
+      "private": true
     },
     "favorite": {
       "type": "boolean",

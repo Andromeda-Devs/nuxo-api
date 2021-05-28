@@ -3,13 +3,14 @@ const uuid = require("uuid");
 const { knex } = require("../../../constants");
 const { getEmited, getReceived } = require("./scrapper");
 const { sleep } = require("../../../utils");
+const rimraf = require('rimraf');
 
 const refreshData = async (resultScraping, data, table) => {
   for (const enterpriseHistory of resultScraping) {
-    let enterprise = await knex('enterprises').where({
+    let enterprise = await strapi.query('enterprise').findOne({
       enterpriseRut: enterpriseHistory.rut.trim(),
       rut: data.id
-    }).first();
+    });
     if (!enterprise) {
       enterprise = await strapi.query('enterprise').create({
         rut: data.id,
@@ -47,48 +48,45 @@ const refreshData = async (resultScraping, data, table) => {
     for (item of info) {
       const entity = table === 'emits' ? 'emit' : 'received';
       const code = item.code;
-      const finded = await strapi.query(entity).findOne({code});
-      if (!finded) {
-        try{
-          const result = await strapi.query(entity).create(item);
     
-          const name = fs.readdirSync(
-            `public/uploads/${code}`
-          ).reduce((acc, cur) => cur, '');
-    
-          const path = `/uploads/${code}/${name}`
-          const publicPath = `public${path}`;
-    
-          const fileStat = fs.statSync(publicPath);
-    
-          await strapi.plugins.upload.services.upload.upload({
-            data: {
-              refId: result.id,
-              ref: entity,
-              field: 'file',
-            },
-            files: {
-              path: publicPath,
-              name: name,
-              type: 'application/pdf', // mime type
-              size: fileStat.size,
-            },
-          });
-    
-          await strapi.config.functions.document.updateData(result.id, publicPath, entity);
-          await sleep(200);
-        }catch(err) {
+      try{
+        const result = await strapi.query(entity).create(item);
+  
+        const name = fs.readdirSync(
+          `public/uploads/${code}`
+        ).reduce((acc, cur) => cur, '');
+  
+        const path = `/uploads/${code}/${name}`
+        const publicPath = `public${path}`;
+  
+        const fileStat = fs.statSync(publicPath);
+  
+        await strapi.config.functions.document.updateData(result.id, publicPath, entity);
 
-        }
-      }
-
-      try {
-        fs.rmdirSync(`public/uploads/${code}`, {
-          recursive: true
+        await strapi.plugins.upload.services.upload.upload({
+          data: {
+            refId: result.id,
+            ref: entity,
+            field: 'file',
+          },
+          files: {
+            path: publicPath,
+            name: name,
+            type: 'application/pdf', // mime type
+            size: fileStat.size,
+          },
         });
-      } catch (error) {
-        // console.log(error)
+  
+        await sleep(200);
+      }catch(err) {
+        console.log(err);
+      } finally {
+        rimraf.sync(`public/uploads/${code}`);
+        // fs.rmdirSync(`public/uploads/${code}`, {
+        //   recursive: true
+        // });
       }
+
     }
 
   }
@@ -96,13 +94,11 @@ const refreshData = async (resultScraping, data, table) => {
 
 const refreshEmits = async ({ data }) => {
   try {
-    // const resultScraping = 
     await getEmited({
       refreshData,
       entity: 'emits',
       ...data
     });
-    // await refreshData(resultScraping, data, "emits");
   } catch (error) {
     console.log(error);
   }
@@ -123,5 +119,6 @@ const refreshReceived = async ({ data }) => {
 
 module.exports = {
   refreshEmits,
-  refreshReceived
+  refreshReceived,
+  refreshData
 };

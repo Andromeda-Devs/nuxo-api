@@ -1370,6 +1370,9 @@
                 "log": {
                   "type": "object"
                 },
+                "rut": {
+                  "type": "string"
+                },
                 "created_by": {
                   "type": "string"
                 },

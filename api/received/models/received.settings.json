@@ -37,15 +37,6 @@
       "type": "string",
       "unique": true
     },
-    "document": {
-      "collection": "file",
-      "via": "related",
-      "allowedTypes": [
-        "files"
-      ],
-      "plugin": "upload",
-      "required": false
-    },
     "products": {
       "type": "component",
       "repeatable": true,
@@ -59,6 +50,9 @@
       ],
       "plugin": "upload",
       "required": false
+    },
+    "document": {
+      "type": "string"
     }
   }
 }

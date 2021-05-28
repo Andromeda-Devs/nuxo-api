@@ -600,9 +600,6 @@
           "rut": {
             "type": "string"
           },
-          "password": {
-            "type": "string"
-          },
           "enterprises": {
             "type": "array",
             "items": {
@@ -711,9 +708,6 @@
                 "type": "string"
               }
             }
-          },
-          "certificatePassword": {
-            "type": "string"
           },
           "favorite": {
             "type": "boolean",

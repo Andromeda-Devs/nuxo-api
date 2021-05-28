@@ -652,16 +652,13 @@
                 "code": {
                   "type": "string"
                 },
-                "document": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
                 "products": {
                   "type": "component"
                 },
                 "file": {
+                  "type": "string"
+                },
+                "document": {
                   "type": "string"
                 },
                 "created_by": {

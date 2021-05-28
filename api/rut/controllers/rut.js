@@ -34,7 +34,19 @@ const createRut = async (ctx) =>{
 
 const find = async (ctx) => {
     const { user: {id: user} } = ctx.state;
-    const ruts = await strapi.query('rut').find({user});
+    const { query } = ctx;
+    let ruts;
+    if (query._q){
+        ruts = await strapi.query('rut').search({
+            user,
+            ...query
+        });
+    } else {
+        ruts = await strapi.query('rut').find({
+            user,
+            ...query
+        });
+    }
 
     return ruts.map(entity => sanitizeEntity(entity, {model: strapi.models.rut}))
 }

@@ -36,6 +36,9 @@
     },
     "log": {
       "type": "json"
+    },
+    "rut": {
+      "type": "string"
     }
   }
 }

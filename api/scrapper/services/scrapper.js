@@ -1,20 +1,21 @@
 'use strict';
-const puppeteer = require('puppeteer-extra')
+// const puppeteer = require('puppeteer-extra')
+const puppeteer = require('puppeteer')
 const path = require("path");
 const { sleep } = require("../../../utils");
 const fs = require("fs");
 const { default: createStrapi } = require('strapi');
 
-puppeteer.use(require('puppeteer-extra-plugin-user-preferences')({
-  userPrefs: {
-    download: {
-      prompt_for_download: false,
-    },
-    plugins: {
-      always_open_pdf_externally: true // this should do the trick
-    }
-  }
-}));
+// puppeteer.use(require('puppeteer-extra-plugin-user-preferences')({
+//   userPrefs: {
+//     download: {
+//       prompt_for_download: false,
+//     },
+//     plugins: {
+//       always_open_pdf_externally: true // this should do the trick
+//     }
+//   }
+// }));
 
 const scraperObj = {
   multiRoute: '',
@@ -112,16 +113,25 @@ const scraperObj = {
   async scrapeDocuments(invoices, params) {
     const newInvoices = [];
     const { params: {refreshData, entity}, rut_id } = params;
-    const ignore = await strapi.config.functions.document.getCodes((entity.slice(0, entity.length-1)));
-    console.log(ignore)
     let count = 0;
     for (const invoice of invoices) {
-      const code = invoice['0'].split('CODIGO=')[1].split('&')[0];
+      const code = invoice['0'].split('CODIGO=')[1].split('&')[0].trim();
+      const is_exist = await strapi.query((entity.slice(0, entity.length - 1))).findOne({
+        code_contains: code
+      });
+
       const url = invoice['0'].includes('mipeGesDocEmi.cgi') ?
         this._documentBaseUrlSent :
         this._documentBaseUrlReceived;
-      if (!ignore.includes(code)) {
-        const page = await this._browser.newPage();
+
+      if (!is_exist) {
+        let page;
+        try {
+          page = await this._browser.newPage();
+        } catch (err1) {
+          console.log('fallo aqui');
+          continue;
+        }
         const downloadPath = path.join(__dirname, `../../../public/uploads/${code}`)
         await page._client.send('Page.setDownloadBehavior', {
           behavior: 'allow',
@@ -140,7 +150,6 @@ const scraperObj = {
           await page.goto(completeUrl);
         } catch (e) {
           console.log('document: ', count++);
-          let done = false;
           let time = 100;
 
           const toRefresh = [
@@ -154,18 +163,20 @@ const scraperObj = {
             const fileExists = fs.existsSync(downloadPath + '/77022026.pdf');
             if (fileExists) {
               await refreshData(toRefresh, params.params, entity);
-              done = true;
-            } else if (time === 3000) {
+              break
+            } else if (time === 10000) {
               break;
             }
             time += 100;
-          } while (!done);
+          } while (true);
         }
         await page.close();
       }
       if (this._limit && this._limit < count) {
+      // if (count < 10) {
         break;
       }
+      
     }
     await sleep(10000);
     console.log('finish');
@@ -459,6 +470,12 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
         ...params
       });
       browser.close();
+
+      await strapi.query('process').update({id: params.processDocument.id}, {
+        ...params.processDocument,
+        status: 'DONE'
+      });
+      
       return result;
     }
     catch (err) {
@@ -474,10 +491,6 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
       }
     }
   }
-  await strapi.query('process').update(params.processDocument, {
-    ...params.processDocument,
-    status: 'DONE'
-  });
 }
 
 const createDocument = async ({ rut: username, clave: password, ...params }) => {

@@ -1,5 +1,4 @@
 'use strict';
-const { refreshInformationEmits } = require("../../../workers");
 const { createAffectInvoice, createDispatchGuide, createExemptInvoice, getDocumentReceiver } = require("../../scrapper/services/scrapper");
 const { affectInvoice, exemptInvoice, dispatchGuide } = require("../../../utils");
 const { sanitizeEntity } = require('strapi-utils');
@@ -11,18 +10,28 @@ const find = async (ctx) => {
     } = ctx;
     let entities;
     if (query._q) {
-        entities = await strapi.services.emit.search({ ...query, user });
+        entities = await strapi.services.emit.search({ 
+            ...query, 
+            'enterprise.rut.user': user
+        }, ['enterprise', 'enterprise.rut', 'enterprise.rut.user', 'file']);
     } else {
-        entities = await strapi.services.emit.find({ ...query, user });
+        entities = await strapi.services.emit.find({ 
+            ...query, 
+            'enterprise.rut.user': user
+        }, ['enterprise', 'enterprise.rut', 'enterprise.rut.user', 'file']);
     }
 
-    return entities.map(entity => sanitizeEntity(entity, { model: strapi.models.emit }));
+    return entities.map(entity => {
+        const res = sanitizeEntity(entity, { model: strapi.models.emit });
+        delete res.enterprise;
+        return res;
+    });
 }
 
 const refresh = async (ctx) => {
     const { user } = ctx.state;
     const rut = await strapi.query('rut').findOne({
-        rut: ctx.request.body.rut, favorite: true
+        rut: ctx.request.body.rut
     });
 
     if (!rut) return null;
@@ -34,7 +43,8 @@ const refresh = async (ctx) => {
     const activeProcess = await strapi.query('process').findOne({
         user: user.id,
         status_in: ['ON_HOLD', 'PROCESSING'],
-        entity_relation: 'emit'
+        entity_relation: 'emit',
+        rut: ctx.request.body.rut
     });
 
     if (activeProcess) {
@@ -47,33 +57,12 @@ const refresh = async (ctx) => {
     const {user: _user, ...newProcess} = await strapi.query('process').create({
         user,
         entity_relation: 'emit',
+        rut: ctx.request.body.rut
     })
-
-    refreshInformationEmits.add({
-        ...rut,
-        clave: rut.password,
-        processDocument: newProcess
-    });
 
     return sanitizeEntity(newProcess, {
         model: strapi.models.process
     });
-}
-
-const refreshAll = async (ctx) => {
-
-    const ruts = await strapi.query('rut').find();
-
-    if (!ruts) return null;
-
-    ruts.map(async (rut) => {
-        refreshInformationEmits.add({
-            ...rut,
-            clave: rut.password,
-        });
-    });
-
-    return { message: "process in progress" };
 }
 
 const emitAffectInvoice = async (ctx) => {
@@ -157,10 +146,10 @@ const documentReceiverDefault = async (ctx) => {
 
 module.exports = {
     refresh,
-    refreshAll,
     emitAffectInvoice,
     emitDispatchGuide,
     emitExemptInvoice,
     documentReceiver, 
-    documentReceiverDefault
+    documentReceiverDefault,
+    find
 };

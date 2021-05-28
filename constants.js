@@ -20,6 +20,7 @@ const redisConnection = {
     family: process.env.REDIS_FAMILY, // 4 (IPv4) or 6 (IPv6)
     db: process.env.REDIS_DB,
   };
+  
 module.exports = {
     redisConnection, 
     knexConfiguration,

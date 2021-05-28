@@ -1,8 +1,8 @@
 'use strict';
-const { uuid } = require('uuidv4');
+const uuid = require("uuid");
 
 const beforeCreate = async (data) => {
-    data.hash = uuid();
+    data.hash = uuid.v4();
 }
 
 module.exports = {
