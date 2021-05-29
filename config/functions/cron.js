@@ -1,8 +1,6 @@
 'use strict';
 
 const { refreshData } = require('../../api/scrapper/services/implementations');
-const { knex } = require('../../constants');
-const fs = require('fs');
 
 
 const startNewProcess = async () => {

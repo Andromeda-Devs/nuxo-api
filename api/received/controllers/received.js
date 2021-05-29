@@ -1,5 +1,5 @@
 'use strict';
-
+const { refreshInformationEmits } = require("../../../workers");
 const { sanitizeEntity } = require('strapi-utils');
 
 const refresh = async (ctx) => {
