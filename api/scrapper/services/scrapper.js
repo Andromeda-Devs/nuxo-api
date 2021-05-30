@@ -512,7 +512,7 @@ const createDocument = async ({ rut: username, clave: password, ...params }) => 
     return result;
   }
   catch (err) {
-    console.log(err.stackTrace());
+    console.log(err);
     throw err;
   }finally{
     let pages = await browser.pages();
