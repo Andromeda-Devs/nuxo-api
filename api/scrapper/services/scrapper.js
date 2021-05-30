@@ -17,7 +17,7 @@ const { default: createStrapi } = require('strapi');
 //   }
 // }));
 
-const closeBrowser = browser => {
+const closeBrowser = async browser => {
   try{
     let pages = await browser.pages();
     await Promise.all(pages.map(page =>page.close()));
