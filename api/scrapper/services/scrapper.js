@@ -505,9 +505,9 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
         throw err;
       }
     }
-    finally(
+    finally{
       closeBrowser(browser);
-    )
+    }
   }
 }
 
