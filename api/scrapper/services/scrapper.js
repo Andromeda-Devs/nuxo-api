@@ -357,12 +357,18 @@ const scraperObj = {
       await page.click('button[type="submit"]');
       await page.waitForSelector('.container');
     }
+    console.log("Se va a procesar selectores");
     for (const key of Object.keys(rest)) {
       await this.processSelectors(page, rest[key], this.tags[key])
     }
+    console.log("Se Procesaron los selectores");
+    console.log("Se van a procesar los productos");
     await this.processProducts(page, products);
+    console.log("Se procesaron los productos");
     if (!params.debug) {
+      console.log("Se van a finalizar los documentos");
       res = await this.finalizeDocument(page, certificatePassword);
+      console.log("Se finalizaron todos los documentos");
     }
     return res;
   },
@@ -503,12 +509,15 @@ const createDocument = async ({ rut: username, clave: password, ...params }) => 
       password,
       ...params
     });
-    browser.close();
     return result;
   }
   catch (err) {
-    browser.close();
+    console.log(err.stackTrace());
     throw err;
+  }finally{
+    let pages = await browser.pages();
+    await Promise.all(pages.map(page =>page.close()));
+    await browser.close();
   }
 }
 
