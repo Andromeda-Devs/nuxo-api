@@ -235,7 +235,8 @@ const scraperObj = {
       await page.type(selector, data)
       if (selector.includes('EFXP_DV_RECEP')) {
         await page.click('.container');
-        await page.waitForNavigation();
+        //await page.waitForNavigation();
+        await sleep(2000)
       }
     }
   },
