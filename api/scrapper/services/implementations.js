@@ -5,7 +5,7 @@ const { getEmited, getReceived } = require("./scrapper");
 const { sleep } = require("../../../utils");
 const rimraf = require('rimraf');
 
-const refreshData = async (resultScraping, data, table) => {
+const refreshData = async (resultScraping, data, entity) => {
   for (const enterpriseHistory of resultScraping) {
     let enterprise = await strapi.query('enterprise').findOne({
       enterpriseRut: enterpriseHistory.rut.trim(),
@@ -45,12 +45,13 @@ const refreshData = async (resultScraping, data, table) => {
       return item !== null;
     });
 
+    let result;
+
     for (item of info) {
-      const entity = table === 'emits' ? 'emit' : 'received';
       const code = item.code;
     
       try{
-        const result = await strapi.query(entity).create(item);
+        result = await strapi.query(entity).create(item);
   
         const name = fs.readdirSync(
           `public/uploads/${code}`
@@ -88,6 +89,8 @@ const refreshData = async (resultScraping, data, table) => {
       }
 
     }
+
+    return result;
 
   }
 }

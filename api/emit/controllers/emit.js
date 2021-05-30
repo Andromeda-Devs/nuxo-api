@@ -71,7 +71,7 @@ const emitAffectInvoice = async (ctx) => {
     });
     if (!rut) return null;
 
-    const url = await createAffectInvoice({
+    const result = await createAffectInvoice({
         ...rut,
         clave: rut.password,
         ...ctx.request.body
@@ -79,7 +79,7 @@ const emitAffectInvoice = async (ctx) => {
         ...ctx.request.body.document
     });
 
-    return { url };
+    return result;
 }
 
 const emitExemptInvoice = async (ctx) => {
@@ -90,14 +90,14 @@ const emitExemptInvoice = async (ctx) => {
 
     if (!rut) return null;
 
-    const url = await createExemptInvoice({
+    const result = await createExemptInvoice({
         ...rut,
         clave: rut.password,
         ...ctx.request.body
     }, {
         ...ctx.request.body.document
     })
-    return { url };
+    return result;
 }
 
 const emitDispatchGuide = async (ctx) => {
@@ -108,7 +108,7 @@ const emitDispatchGuide = async (ctx) => {
 
     if (!rut) return null;
 
-    const url = await createDispatchGuide({
+    const result = await createDispatchGuide({
         ...rut,
         clave: rut.password,
         ...ctx.request.body
@@ -116,7 +116,7 @@ const emitDispatchGuide = async (ctx) => {
         ...ctx.request.body.document
     })
 
-    return { url };
+    return result;
 }
 
 const documentReceiver = async (ctx) => {

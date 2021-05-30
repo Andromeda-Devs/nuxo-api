@@ -4,7 +4,100 @@ const puppeteer = require('puppeteer')
 const path = require("path");
 const { sleep } = require("../../../utils");
 const fs = require("fs");
+const rimraf = require('rimraf');
+// const { refreshData } = require('./implementations');
 const { default: createStrapi } = require('strapi');
+
+
+const refreshData = async (resultScraping, data, entity) => {
+  for (const enterpriseHistory of resultScraping) {
+    let enterprise = await strapi.query('enterprise').findOne({
+      enterpriseRut: enterpriseHistory.rut.trim(),
+      rut: data.id
+    });
+    if (!enterprise) {
+      enterprise = await strapi.query('enterprise').create({
+        rut: data.id,
+        enterpriseRut: enterpriseHistory.rut
+      });
+    }
+    let info = enterpriseHistory.data.map((item) => {
+      let fileExist = false;
+      try {
+        fs.readdirSync(`public/uploads/${item.code}`).forEach(file => {
+          if (file)
+            fileExist = true;
+        });
+        if (!fileExist) return null;
+        return {
+          rut: item[1].trim(),
+          businessName: item[2],
+          document: item[3],
+          invoice: item[4],
+          date: item[5],
+          amount: item[6],
+          state: item[7],
+          enterprise: enterprise.id,
+          code: item.code
+        }
+
+      } catch (error) {
+        return null;
+      }
+    });
+    info = info.filter((item) => {
+      return item !== null;
+    });
+
+    let result;
+
+    for (const item of info) {
+      const code = item.code;
+    
+      try{
+        result = await strapi.query(entity).create(item);
+  
+        const name = fs.readdirSync(
+          `public/uploads/${code}`
+        ).reduce((acc, cur) => cur, '');
+  
+        const path = `/uploads/${code}/${name}`
+        const publicPath = `public${path}`;
+  
+        const fileStat = fs.statSync(publicPath);
+  
+        await strapi.config.functions.document.updateData(result.id, publicPath, entity);
+
+        await strapi.plugins.upload.services.upload.upload({
+          data: {
+            refId: result.id,
+            ref: entity,
+            field: 'file',
+          },
+          files: {
+            path: publicPath,
+            name: name,
+            type: 'application/pdf', // mime type
+            size: fileStat.size,
+          },
+        });
+  
+        await sleep(200);
+      }catch(err) {
+        console.log(err);
+      } finally {
+        rimraf.sync(`public/uploads/${code}`);
+        // fs.rmdirSync(`public/uploads/${code}`, {
+        //   recursive: true
+        // });
+      }
+
+    }
+
+    return result;
+
+  }
+}
 
 // puppeteer.use(require('puppeteer-extra-plugin-user-preferences')({
 //   userPrefs: {
@@ -155,13 +248,19 @@ const scraperObj = {
     });
     return data;
   },
+  async getCodeFromUrl (url) {
+    return url.split('CODIGO=')[1].split('&')[0].trim();
+  },
+  async buildDownloadPath (code) {
+    return path.join(__dirname, `../../../public/uploads/${code}`);
+  },
   async scrapeDocuments(invoices, params) {
     const newInvoices = [];
-    const { params: {refreshData, entity}, rut_id } = params;
+    const { params: { entity }, rut_id } = params;
     let count = 0;
     for (const invoice of invoices) {
-      const code = invoice['0'].split('CODIGO=')[1].split('&')[0].trim();
-      const is_exist = await strapi.query((entity.slice(0, entity.length - 1))).findOne({
+      const code = await this.getCodeFromUrl(invoice['0']);
+      const is_exist = await strapi.query(entity).findOne({
         code_contains: code
       });
 
@@ -177,7 +276,7 @@ const scraperObj = {
           console.log('fallo aqui');
           continue;
         }
-        const downloadPath = path.join(__dirname, `../../../public/uploads/${code}`)
+        const downloadPath = await this.buildDownloadPath(code);
         await page._client.send('Page.setDownloadBehavior', {
           behavior: 'allow',
           downloadPath
@@ -376,14 +475,8 @@ const scraperObj = {
       }
     }
   },
-  async finalizeDocument(page, certificatePassword) {
-    await page.click(this.tags.sendBtn);
-    await sleep(5000);//page.waitForNavigation();
-    await page.click(this.tags.sign);
-    await sleep(5000);//page.waitForNavigation();
-    await page.type(this.tags.certificate, certificatePassword);
-    await page.click(this.tags.finalize);
-    await sleep(5000);//page.waitForNavigation();
+
+  async getDocumentLink (page) {
     const [link] = await page.$x(`//a[contains( . , 'Ver Documento')]`);
     if (link) {
       const href = await page.evaluate(el => {
@@ -391,6 +484,122 @@ const scraperObj = {
       }, link)
       return href;
     }
+  },
+
+  async getDocumentLink (page) {
+    const [link] = await page.$x(`//a[contains( . , 'Ver Documento')]`);
+      if (link) {
+        const href = await page.evaluate(el => {
+          return el.href;
+        }, link)
+        return href;
+      }
+  },
+
+  async buildDocumentObject (page) {
+
+    const [ref] = await page.$x(`//div[@class='web-sii cuerpo']/div/div[3]`);
+    const text = await ref.evaluate(el => {
+      return el.innerText;
+    });
+
+    const link = await this.getDocumentLink(page);
+
+    const [
+      myCompany,
+      emitDate,
+      myRut,
+      documentType, 
+      folio,
+      receiverName,
+      receiverRut,
+      total
+    ] = text.split('\n')
+      .filter(item => item !== '')
+      .map(item => item.includes('\t') ? item.split('\t')[1] : item);
+
+    const res = {
+      'senderRut': myRut.split(' ')[1],
+      '1': receiverRut,
+      '2': receiverName,
+      '3': documentType,
+      '4': folio.split(' ')[1],
+      '5': emitDate.split(': ')[1].split('-').reverse().join('-'),
+      '6': total.slice(1),
+      '7': 'Documento Emitido',
+      link
+    };
+
+    return res;
+  },
+
+  async saveInvoiceDocument (page, params) {
+    const {
+      link,
+      senderRut,
+      ...newItem
+    } = await this.buildDocumentObject(page);
+
+    const code = await this.getCodeFromUrl(link);
+    const entity = 'emit';
+    const downloadPath = await this.buildDownloadPath(code);
+    const url = this._documentBaseUrlSent;
+
+    const newPage = await this._browser.newPage();
+    await page._client.send('Page.setDownloadBehavior', {
+      behavior: 'allow',
+      downloadPath
+    });
+
+    let result;
+
+    try {
+      const completeUrl = `${url}=${code}`;
+      await newPage.goto(completeUrl);
+    } catch (e) {
+      let time = 100;
+      const toRefresh = [
+        {
+          rut: senderRut,
+          data: [{
+            ...newItem,
+            '0': code,
+            code,
+            path: downloadPath
+          }]
+        }
+      ]
+      do {
+        await sleep(100);
+        const fileExists = fs.existsSync(downloadPath + '/77022026.pdf');
+        if (fileExists) {
+          console.log(refreshData)
+          result = await refreshData(toRefresh, params, entity);
+          break
+        } else if (time === 10000) {
+          break;
+        }
+        time += 100;
+      } while (true);
+    }
+
+    return result;
+
+  },
+
+  async finalizeDocument(page, certificatePassword, params) {
+    await page.click(this.tags.sendBtn);
+    await sleep(5000);//page.waitForNavigation();
+    await page.click(this.tags.sign);
+    await sleep(5000);//page.waitForNavigation();
+    await page.type(this.tags.certificate, certificatePassword);
+    await page.click(this.tags.finalize);
+    await sleep(5000);//page.waitForNavigation();
+
+    // console.log(refreshData);
+    const result = await this.saveInvoiceDocument(page, params);
+
+    return result;
 
   },
   async downloadInvoicePdf(page,link){ 
@@ -412,6 +621,7 @@ const scraperObj = {
   },
   async createDocument({ document, browser, certificatePassword, empOption, ...params }) {
     var res = '';
+    this._browser = browser;
     const page = await this.login((await browser.newPage()), params);
     const { products, ...rest } = document;
     if (page.url().includes('mipeSelEmpresa.cgi')) {
@@ -429,12 +639,12 @@ const scraperObj = {
     console.log("Se procesaron los productos");
     if (!params.debug) {
       console.log("Se van a finalizar los documentos");
-      res = await this.finalizeDocument(page, certificatePassword);
-      console.log("res: " + res);
-      console.log("Se va a descargar el pdf");
-      await this.downloadInvoicePdf(page,res);
-      console.log("Se descargo el pdf");
-      console.log("Se finalizaron todos los documentos");
+      res = await this.finalizeDocument(page, certificatePassword, params);
+      // console.log("res: " + res);
+      // console.log("Se va a descargar el pdf");
+      // await this.downloadInvoicePdf(page,res);
+      // console.log("Se descargo el pdf");
+      // console.log("Se finalizaron todos los documentos");
     }
     return res;
   },
@@ -566,6 +776,7 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
 }
 
 const createDocument = async ({ rut: username, clave: password, ...params }) => {
+  console.log(refreshData)
   let browser;
   try {
     browser = await startBrowser();

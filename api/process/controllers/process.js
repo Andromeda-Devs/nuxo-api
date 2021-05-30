@@ -1,8 +1,5 @@
 'use strict';
 
-const { refreshData } = require('../../scrapper/services/implementations');
-
-
 const startNewProcess = async () => {
   const nextProcess = await strapi.query('process').findOne({
     status: 'ON_HOLD'
@@ -18,8 +15,7 @@ const startNewProcess = async () => {
 
   try{
     const params = {
-      refreshData,
-      entity: `${entity_relation}s`,
+      entity: entity_relation,
       ...rut,
       clave: rut.password,
       processDocument: nextProcess
@@ -50,9 +46,11 @@ const check = async (ctx) => {
 
     if (!activeProcess) {
       await startNewProcess();
+    } else {
+      return 'processing';
     }
     
-    return activeProcess;
+    return 'process done';
 }
 
 module.exports = {
