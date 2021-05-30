@@ -17,6 +17,17 @@ const { default: createStrapi } = require('strapi');
 //   }
 // }));
 
+const closeBrowser = browser => {
+  try{
+    let pages = await browser.pages();
+    await Promise.all(pages.map(page =>page.close()));
+    await browser.close();
+  }catch(err){
+    console.log("No se pudo cerrar el navegador");
+  }
+
+}
+
 const scraperObj = {
   multiRoute: '',
   next: 'a[title="Pagina siguiente"]',
@@ -476,8 +487,6 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
         limit,
         ...params
       });
-      browser.close();
-
       await strapi.query('process').update({id: params.processDocument.id}, {
         ...params.processDocument,
         status: 'DONE'
@@ -486,7 +495,6 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
       return result;
     }
     catch (err) {
-      browser.close();
       console.log(err);
       if (++tries === 3){
         await strapi.query('process').update({ id: params.processDocument.id }, {
@@ -497,6 +505,9 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
         throw err;
       }
     }
+    finally(
+      closeBrowser(browser);
+    )
   }
 }
 
@@ -516,9 +527,7 @@ const createDocument = async ({ rut: username, clave: password, ...params }) => 
     console.log(err);
     throw err;
   }finally{
-    let pages = await browser.pages();
-    await Promise.all(pages.map(page =>page.close()));
-    await browser.close();
+    closeBrowser(browser);
   }
 }
 
@@ -532,12 +541,12 @@ const getDocumentData = async ({ rut: username, clave: password, ...params }) =>
       password,
       ...params
     });
-    browser.close();
     return result;
   }
   catch (err) {
-    browser.close();
     throw err;
+  }finally{
+    closeBrowser(browser);
   }
 }
 
