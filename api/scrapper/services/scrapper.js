@@ -25,7 +25,41 @@ const closeBrowser = async browser => {
   }catch(err){
     console.log("No se pudo cerrar el navegador");
   }
+}
 
+//Recibe array buffer y path 
+const writeArrayBufferStringToFileSystem = async (strbuffer,path) => {
+  let str2ab = function _str2ab(str) {
+    let buf = new ArrayBuffer(str.length);
+    let bufView = new Uint8Array(buf);
+    for(let i = 0, strLen = str.length; i < strLen; i++){
+      bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+  }
+  console.log("In 'writing ab string function...'");
+  return new Promise( (resolve, reject) => {
+    let buf = Buffer.from(str2ab(strbuffer));
+    fs.writeFile(path,buf,( err, text ) => {
+      console.error(err);
+      if(err) reject(err);
+      else resolve(targetFile);
+    })
+  });
+}
+
+const arrayBufferToString = (buffer) => { // Convert an ArrayBuffer to an UTF-8 String
+  var bufView = new Uint8Array(buffer);
+  var length = bufView.length;
+  var result = '';
+  var addition = Math.pow(2,8)-1;
+  for(var i = 0;i<length;i+=addition){
+      if(i + addition > length){
+          addition = length - i;
+      }
+      result += String.fromCharCode.apply(null, bufView.subarray(i,i+addition));
+  }
+  return result;
 }
 
 const scraperObj = {
@@ -344,13 +378,12 @@ const scraperObj = {
   },
   async finalizeDocument(page, certificatePassword) {
     await page.click(this.tags.sendBtn);
-    await sleep(2000);//page.waitForNavigation();
+    await sleep(5000);//page.waitForNavigation();
     await page.click(this.tags.sign);
-    await sleep(2000);//page.waitForNavigation();
+    await sleep(5000);//page.waitForNavigation();
     await page.type(this.tags.certificate, certificatePassword);
     await page.click(this.tags.finalize);
-    await sleep(2000);//page.waitForNavigation();
-
+    await sleep(5000);//page.waitForNavigation();
     const [link] = await page.$x(`//a[contains( . , 'Ver Documento')]`);
     if (link) {
       const href = await page.evaluate(el => {
@@ -360,8 +393,25 @@ const scraperObj = {
     }
 
   },
+  async downloadInvoicePdf(page,link){ 
+    const executeDownloadPdf = async (link) => {
+      try{
+        const res = await fetch(link,{
+          credentials: 'same-origin', // usefull when we are logged into a website and want to send cookies
+          responseType: 'arraybuffer', // get response as an ArrayBuffer
+        })
+        const arrayBuffer = await res.arrayBuffer();
+        let bufferString = arrayBufferToString(arrayBuffer);
+        return window.writeABString(bufferString,'downloadtest.pdf');
+      }catch(err){
+        console.log("Request para descargar pdf fallo ",err);
+      }
+    }
+    await page.exposeFunction("writeABString", writeArrayBufferStringToFileSystem )
+    await page.evaluate( executeDownloadPdf , link );
+  },
   async createDocument({ document, browser, certificatePassword, empOption, ...params }) {
-    let res = '';
+    var res = '';
     const page = await this.login((await browser.newPage()), params);
     const { products, ...rest } = document;
     if (page.url().includes('mipeSelEmpresa.cgi')) {
@@ -380,6 +430,10 @@ const scraperObj = {
     if (!params.debug) {
       console.log("Se van a finalizar los documentos");
       res = await this.finalizeDocument(page, certificatePassword);
+      console.log("res: " + res);
+      console.log("Se va a descargar el pdf");
+      await this.downloadInvoicePdf(page,res);
+      console.log("Se descargo el pdf");
       console.log("Se finalizaron todos los documentos");
     }
     return res;
