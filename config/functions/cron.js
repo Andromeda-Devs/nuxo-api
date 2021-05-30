@@ -44,14 +44,14 @@ module.exports = {
    * Simple example.
    * Every monday at 1am.
    */
-  '* * * * *': async () => {
-    console.log('CHECKING');
-    const activeProcess = await strapi.query('process').findOne({
-      status: 'PROCESSING'
-    });
+  // '* * * * *': async () => {
+  //   console.log('CHECKING');
+  //   const activeProcess = await strapi.query('process').findOne({
+  //     status: 'PROCESSING'
+  //   });
 
-    if (!activeProcess) {
-      await startNewProcess();
-    }
-  }
+  //   if (!activeProcess) {
+  //     await startNewProcess();
+  //   }
+  // }
 };

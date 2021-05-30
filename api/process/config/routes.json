@@ -33,6 +33,14 @@
       }
     },
     {
+      "method": "POST",
+      "path": "/processes/check",
+      "handler": "process.check",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "PUT",
       "path": "/processes/:id",
       "handler": "process.update",
