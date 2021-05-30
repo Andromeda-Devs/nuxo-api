@@ -25,10 +25,15 @@ const startNewProcess = async () => {
       processDocument: nextProcess
     };
 
-    if(entity_relation === 'emit')
+    if(entity_relation === 'emit'){
       await strapi.services.scrapper.getEmited(params);
-    else 
+    }else{
       await strapi.services.scrapper.getReceived(params);
+    } 
+    await strapi.query('process').update({id: nextProcess.id}, {
+      status: 'DONE'
+    });
+    return true;
   }catch (err) {
     await strapi.query('process').update({id: nextProcess.id}, {
       status: 'ON_HOLD'
