@@ -79,6 +79,11 @@ const refreshData = async (resultScraping, data, entity) => {
         });
   
         await sleep(200);
+
+        result = await strapi.query(entity).findOne({
+          id: result.id
+        });
+        
       }catch(err) {
         console.log(err);
       } finally {
