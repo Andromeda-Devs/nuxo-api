@@ -45,13 +45,13 @@ const refreshData = async (resultScraping, data, entity) => {
       return item !== null;
     });
 
-    let result;
+    let res;
 
     for (item of info) {
       const code = item.code;
     
       try{
-        result = await strapi.query(entity).create(item);
+        const result = await strapi.query(entity).create(item);
   
         const name = fs.readdirSync(
           `public/uploads/${code}`
@@ -80,10 +80,10 @@ const refreshData = async (resultScraping, data, entity) => {
   
         await sleep(200);
 
-        result = await strapi.query(entity).findOne({
+        res = await strapi.query(entity).findOne({
           id: result.id
         });
-        
+
       }catch(err) {
         console.log(err);
       } finally {
@@ -95,7 +95,7 @@ const refreshData = async (resultScraping, data, entity) => {
 
     }
 
-    return result;
+    return res;
 
   }
 }
