@@ -79,7 +79,11 @@ const emitAffectInvoice = async (ctx) => {
         ...ctx.request.body.document
     });
 
-    return result;
+    const res = await strapi.query('emit').findOne({
+        id: result.id
+    });
+
+    return res;
 }
 
 const emitExemptInvoice = async (ctx) => {
@@ -97,7 +101,11 @@ const emitExemptInvoice = async (ctx) => {
     }, {
         ...ctx.request.body.document
     })
-    return result;
+    const res = await strapi.query('emit').findOne({
+        id: result.id
+    });
+
+    return res;
 }
 
 const emitDispatchGuide = async (ctx) => {
@@ -116,7 +124,11 @@ const emitDispatchGuide = async (ctx) => {
         ...ctx.request.body.document
     })
 
-    return result;
+    const res = await strapi.query('emit').findOne({
+        id: result.id
+    });
+
+    return res;
 }
 
 const documentReceiver = async (ctx) => {
