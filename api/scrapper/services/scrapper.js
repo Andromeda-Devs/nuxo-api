@@ -651,7 +651,9 @@ const scraperObj = {
   async getReceiverData(page, receiver, result = {}) {
     if (typeof receiver !== 'string') {
       for (const key of Object.keys(receiver)) {
-        result[key] = await this.getReceiverData(page, receiver[key]);
+        try{
+          result[key] = await this.getReceiverData(page, receiver[key]);
+        } catch(err){}
       }
       return result;
     }
@@ -670,8 +672,7 @@ const scraperObj = {
     }
   },
   async getReceiver({ document: { receiver: receiverDoc }, browser, empOption, ...params }) {
-    let res = '';
-    const { receiver } = this.tags;
+    const { receiver, sender } = this.tags;
     const page = await this.login((await browser.newPage()), params);
     if (page.url().includes('mipeSelEmpresa.cgi')) {
       await page.select('select[name="RUT_EMP"]', empOption)
@@ -680,10 +681,15 @@ const scraperObj = {
     }
 
     await this.processSelectors(page, receiverDoc, receiver)
+    await this.processSelectors(page, receiverDoc, sender)
 
-    res = await this.getReceiverData(page, receiver);
+    const receiverData = await this.getReceiverData(page, receiver);
+    const senderData = await this.getReceiverData(page, sender);
 
-    return res;
+    return {
+      sender: senderData,
+      receiver: receiverData
+    };
   },
   async login(page, { url, username, password }) {
     await page.goto(url);
