@@ -661,7 +661,10 @@ const scraperObj = {
     } else if (receiver.startsWith('select')) {
       const options = await page.$$eval(
         `${receiver} optgroup > option`,
-        opts => opts.map(opt => opt.value)
+        opts => opts.map(opt => ({
+          value: opt.value,
+          text: opt.text
+        }))
       )
       return options;
     }
