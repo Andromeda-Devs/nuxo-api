@@ -671,8 +671,36 @@ const scraperObj = {
       return options;
     }
   },
+  async normalizeModel(obj) {
+    const {
+      commune,
+      city,
+      address,
+      ...model
+    } = obj;
+    model['addresses'] = {
+      commune, city, address
+    };
+    return model;
+  },
+  async processAddresses(page, addresses) {
+    const options = await this.getReceiverData(page, addresses.address);
+    const result = [];
+
+    for (const option of options){
+      await page.select(addresses.address, option.value);
+      const res = await this.getReceiverData(page, addresses);
+      result.push({
+        ...res,
+        address: option
+      });
+    }
+
+    return result;
+  },
   async getReceiver({ document: { receiver: receiverDoc }, browser, empOption, ...params }) {
-    const { receiver, sender } = this.tags;
+    const { addresses: senderAddresses, ...sender} = await this.normalizeModel(this.tags.sender);
+    const { addresses: receiverAddresses, ...receiver} = await this.normalizeModel(this.tags.receiver);
     const page = await this.login((await browser.newPage()), params);
     if (page.url().includes('mipeSelEmpresa.cgi')) {
       await page.select('select[name="RUT_EMP"]', empOption)
@@ -686,9 +714,18 @@ const scraperObj = {
     const receiverData = await this.getReceiverData(page, receiver);
     const senderData = await this.getReceiverData(page, sender);
 
+    const senderA = await this.processAddresses(page, senderAddresses);
+    const receiverA = await this.processAddresses(page, receiverAddresses);
+
     return {
-      sender: senderData,
-      receiver: receiverData
+      sender: {
+        addresses:senderA,
+        ...senderData
+      },
+      receiver: {
+        addresses: receiverA,
+        ...receiverData
+      }
     };
   },
   async login(page, { url, username, password }) {
