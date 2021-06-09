@@ -153,10 +153,16 @@
                   "schema": {
                     "properties":{
                       "rut":{
-                        "type":"string"
+                        "type":"string",
+                        "required": true
                       }, 
 	                    "password":{
-                        "type":"string"
+                        "type":"string",
+                        "required": true
+                      },
+                      "certificatePassword":{
+                        "type": "string",
+                        "required": true
                       }
                     }   
                   }
