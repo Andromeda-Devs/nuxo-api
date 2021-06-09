@@ -1,0 +1,57 @@
+{
+  "kind": "collectionType",
+  "collectionName": "rut_infos",
+  "info": {
+    "name": "RutInfo",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "addresses": {
+      "type": "component",
+      "repeatable": true,
+      "component": "info.address"
+    },
+    "businessName": {
+      "type": "string"
+    },
+    "saleType": {
+      "type": "component",
+      "repeatable": true,
+      "component": "info.option"
+    },
+    "purchaseType": {
+      "type": "component",
+      "repeatable": true,
+      "component": "info.option"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "concept": {
+      "type": "component",
+      "repeatable": true,
+      "component": "info.option"
+    },
+    "economicActivity": {
+      "type": "component",
+      "repeatable": true,
+      "component": "info.option"
+    },
+    "contact": {
+      "type": "string"
+    },
+    "rut": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    }
+  }
+}

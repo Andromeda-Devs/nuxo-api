@@ -4,7 +4,7 @@ const { affectInvoice, exemptInvoice, dispatchGuide } = require("../../../utils"
 const { sanitizeEntity } = require('strapi-utils');
 
 const find = async (ctx) => {
-    const {
+    const {    
         state: { user: { id: user } },
         query
     } = ctx;

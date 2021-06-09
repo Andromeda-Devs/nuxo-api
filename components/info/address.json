@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_info_addresses",
+  "info": {
+    "name": "address",
+    "icon": "archway"
+  },
+  "options": {},
+  "attributes": {
+    "commune": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "address": {
+      "type": "component",
+      "repeatable": false,
+      "component": "info.option"
+    }
+  }
+}

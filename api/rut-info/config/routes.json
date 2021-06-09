@@ -2,54 +2,48 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/ruts",
-      "handler": "rut.find",
+      "path": "/rut-infos",
+      "handler": "rut-info.find",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/ruts/count",
-      "handler": "rut.count",
+      "path": "/rut-infos/count",
+      "handler": "rut-info.count",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/ruts/:id",
-      "handler": "rut.findOne",
+      "path": "/rut-infos/:id",
+      "handler": "rut-info.findOne",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/ruts",
-      "handler": "rut.createRut",
-      "validate":{
-        "body":{
-           "rut":"string.required",
-           "password":"string.required"
-         }
-      },
+      "path": "/rut-infos",
+      "handler": "rut-info.create",
       "config": {
         "policies": []
       }
     },
     {
       "method": "PUT",
-      "path": "/ruts/:id",
-      "handler": "rut.update",
+      "path": "/rut-infos/:id",
+      "handler": "rut-info.update",
       "config": {
         "policies": []
       }
     },
     {
       "method": "DELETE",
-      "path": "/ruts/:id",
-      "handler": "rut.delete",
+      "path": "/rut-infos/:id",
+      "handler": "rut-info.delete",
       "config": {
         "policies": []
       }

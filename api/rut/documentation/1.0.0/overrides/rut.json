@@ -1,6 +1,6 @@
 {
     "paths": {
-      "/ruts/create": {
+      "/ruts": {
         "post": {
             "deprecated": false,
             "description": "Create a new record",

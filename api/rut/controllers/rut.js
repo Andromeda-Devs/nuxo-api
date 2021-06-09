@@ -7,7 +7,7 @@
 const { sanitizeEntity } = require('strapi-utils');
 
 const createRut = async (ctx) =>{ 
-    const {id } = ctx.state.user;
+    const { id } = ctx.state.user;
     let payload = {
         ...ctx.request.body, 
         favorite:false,

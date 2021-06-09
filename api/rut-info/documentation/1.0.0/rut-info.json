@@ -1,6 +1,6 @@
 {
   "paths": {
-    "/ruts": {
+    "/rut-infos": {
       "get": {
         "deprecated": false,
         "description": "",
@@ -10,9 +10,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Rut"
+                  "properties": {
+                    "foo": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -51,7 +52,7 @@
         },
         "summary": "",
         "tags": [
-          "Rut"
+          "Rut-info"
         ],
         "parameters": [
           {
@@ -243,7 +244,7 @@
         },
         "summary": "",
         "tags": [
-          "Rut"
+          "Rut-info"
         ],
         "requestBody": {
           "description": "",
@@ -251,18 +252,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "properties": {
-                  "foo": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/NewRut-info"
               }
             }
           }
         }
       }
     },
-    "/ruts/count": {
+    "/rut-infos/count": {
       "get": {
         "deprecated": false,
         "description": "",
@@ -273,8 +270,8 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "count": {
-                      "type": "integer"
+                    "foo": {
+                      "type": "string"
                     }
                   }
                 }
@@ -314,12 +311,12 @@
         },
         "summary": "",
         "tags": [
-          "Rut"
+          "Rut-info"
         ],
         "parameters": []
       }
     },
-    "/ruts/{id}": {
+    "/rut-infos/{id}": {
       "get": {
         "deprecated": false,
         "description": "",
@@ -329,7 +326,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Rut"
+                  "properties": {
+                    "foo": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -367,7 +368,7 @@
         },
         "summary": "",
         "tags": [
-          "Rut"
+          "Rut-info"
         ],
         "parameters": [
           {
@@ -391,7 +392,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Rut"
+                  "properties": {
+                    "foo": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -429,7 +434,7 @@
         },
         "summary": "",
         "tags": [
-          "Rut"
+          "Rut-info"
         ],
         "requestBody": {
           "description": "",
@@ -437,7 +442,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewRut"
+                "$ref": "#/components/schemas/NewRut-info"
               }
             }
           }
@@ -503,7 +508,7 @@
         },
         "summary": "",
         "tags": [
-          "Rut"
+          "Rut-info"
         ],
         "parameters": [
           {
@@ -522,24 +527,19 @@
   },
   "components": {
     "schemas": {
-      "Rut": {
+      "Rut-info": {
         "required": [
           "id",
-          "rut",
-          "password",
-          "certificatePassword",
-          "favorite"
+          "rut"
         ],
         "properties": {
           "id": {
             "type": "string"
           },
-          "rut": {
-            "type": "string"
-          },
-          "enterprises": {
+          "addresses": {
             "type": "array",
             "items": {
+              "type": "object",
               "required": [
                 "id"
               ],
@@ -547,148 +547,265 @@
                 "id": {
                   "type": "string"
                 },
-                "rut": {
+                "commune": {
                   "type": "string"
                 },
-                "emits": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
+                "city": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
                   }
-                },
-                "receiveds": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "enterpriseRut": {
+                }
+              }
+            }
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "saleType": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
                   "type": "string"
                 },
-                "document": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "published_at": {
+                "value": {
                   "type": "string"
                 },
-                "created_by": {
-                  "type": "string"
-                },
-                "updated_by": {
+                "text": {
                   "type": "string"
                 }
               }
             }
           },
-          "user": {
-            "required": [
-              "id",
-              "username",
-              "email"
-            ],
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "username": {
-                "type": "string"
-              },
-              "email": {
-                "type": "string"
-              },
-              "provider": {
-                "type": "string"
-              },
-              "password": {
-                "type": "string"
-              },
-              "resetPasswordToken": {
-                "type": "string"
-              },
-              "confirmationToken": {
-                "type": "string"
-              },
-              "confirmed": {
-                "type": "boolean"
-              },
-              "blocked": {
-                "type": "boolean"
-              },
-              "role": {
-                "type": "string"
-              },
-              "ruts": {
-                "type": "array",
-                "items": {
+          "purchaseType": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "text": {
                   "type": "string"
                 }
-              },
-              "tickets": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "processes": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "created_by": {
-                "type": "string"
-              },
-              "updated_by": {
-                "type": "string"
               }
             }
           },
-          "favorite": {
-            "type": "boolean",
-            "default": false
+          "email": {
+            "type": "string"
           },
-          "published_at": {
-            "type": "string",
-            "format": "date-time"
+          "phone": {
+            "type": "string"
+          },
+          "concept": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "economicActivity": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "contact": {
+            "type": "string"
+          },
+          "rut": {
+            "type": "string"
           }
         }
       },
-      "NewRut": {
+      "NewRut-info": {
         "required": [
-          "rut",
-          "password",
-          "certificatePassword",
-          "favorite"
+          "rut"
         ],
         "properties": {
-          "rut": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "enterprises": {
+          "addresses": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "commune": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
             }
           },
-          "user": {
+          "businessName": {
             "type": "string"
           },
-          "certificatePassword": {
+          "saleType": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "purchaseType": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "email": {
             "type": "string"
           },
-          "favorite": {
-            "type": "boolean",
-            "default": false
+          "phone": {
+            "type": "string"
           },
-          "published_at": {
-            "type": "string",
-            "format": "date-time"
+          "concept": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "economicActivity": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "contact": {
+            "type": "string"
+          },
+          "rut": {
+            "type": "string"
           },
           "created_by": {
             "type": "string"
@@ -700,9 +817,5 @@
       }
     }
   },
-  "tags": [
-    {
-      "name": "Rut"
-    }
-  ]
+  "tags": []
 }

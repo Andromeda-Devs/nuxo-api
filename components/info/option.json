@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_info_options",
+  "info": {
+    "name": "option",
+    "icon": "american-sign-language-interpreting"
+  },
+  "options": {},
+  "attributes": {
+    "value": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    }
+  }
+}
