@@ -47,6 +47,22 @@
       "config": {
         "policies": []
       }
+    }, 
+    {
+      "method": "POST",
+      "path": "/emits/cancel-invoice",
+      "handler": "emit.emitCancelInvoice",
+      "config": {
+        "policies": []
+      }
+    }, 
+    {
+      "method": "POST",
+      "path": "/emits/accept-invoice",
+      "handler": "emit.acceptInvoice",
+      "config": {
+        "policies": []
+      }
     },  
     {
       "method": "POST",
