@@ -109,7 +109,6 @@ const acceptInvoice = async (ctx) => {
         rut: ctx.request.body.rut
     });
     if (!rut) return null;
-
     const result = await strapi.services.scrapper.acceptInvoice({
         ...rut,
         clave: rut.password,

@@ -77,7 +77,22 @@ const createTicket = async (ctx) => {
   return res;
 }
 
+const cancelTicket = async (ctx) => {
+  const { user: { id: user } } = ctx.state;
+  const rut = await strapi.services.rut.byEnterprise(ctx);
+  if (!rut) return rut;
+  const result = await strapi.services.scrapper.cancelTicket(
+    rut, ctx.request.body.document
+  );
+  // const res = await strapi.query('emit').findOne({
+  //     id: result.id
+  // });
+
+  return res;
+}
+
 module.exports = {
   createTicket,
+  cancelTicket,
   find
 };

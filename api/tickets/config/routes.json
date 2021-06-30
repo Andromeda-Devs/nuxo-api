@@ -41,6 +41,14 @@
       }
     },
     {
+      "method": "POST",
+      "path": "/tickets/cancel",
+      "handler": "tickets.cancelTicket",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "PUT",
       "path": "/tickets/:id",
       "handler": "tickets.update",
