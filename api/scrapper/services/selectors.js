@@ -71,7 +71,7 @@ const tags = {
       mm: 'select[name="cbo_mes_boleta_ref_0"]',
       yyyy: 'select[name="cbo_anio_boleta_ref_0"]',
       option: 'select[name="EFXP_CODIGO_REF_00"]',
-      reason: 'input[name="EFXP_RAZON_REF_00"]'
+      reason: 'textarea[name="EFXP_RAZON_REF_00"]'
     },
     acceptBody: {
       status: 'select[name="ESTADO"]',

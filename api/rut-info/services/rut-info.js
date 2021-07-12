@@ -69,7 +69,7 @@ const toReceiver = (receiver) => {
 	return result;
 };
 
-const findOrCreate = async ({rut, document: doc, getDocumentReceiver, args}) => {
+const findOrCreate = async ({rut, document: doc, getDocumentReceiver, ...args}) => {
 	const cleanRut = clean(rut);
 	const receiverRut = await getReceiverCleanRut(doc);
 	let sender = await strapi.query('rut-info').findOne({
@@ -80,7 +80,9 @@ const findOrCreate = async ({rut, document: doc, getDocumentReceiver, args}) => 
 	});
 
 	if (!sender || !receiver){
-		const result = await getDocumentReceiver(args, doc);
+		const result = await getDocumentReceiver({
+			rut: cleanRut, ...args
+		}, doc);
 		console.log(result.receiver)
 		if (!sender) sender = await saveSender(result.sender, cleanRut);
 		if (!receiver) receiver = await saveReceiver(result.receiver, receiverRut);

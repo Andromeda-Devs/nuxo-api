@@ -40,7 +40,7 @@ const crateUsers =  async (knex) =>{
     await knex('ruts').del();
     await knex('ruts').insert([
       {
-        rut: '16.593.992-1',
+        rut: '16593992-1',
         password:'Felipe23',
         user: unaEmpresa.id,
         certificatePassword:"MerSpa2021@",

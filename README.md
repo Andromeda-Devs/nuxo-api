@@ -1,3 +1,4 @@
 # Strapi application
 
-A quick description of your strapi application
+Set a crontab with the url
+POST /processes/check

@@ -9,7 +9,9 @@ const { sanitizeEntity } = require('strapi-utils');
 const createRut = async (ctx) =>{ 
     const { id } = ctx.state.user;
     let payload = {
-        ...ctx.request.body, 
+        ...ctx.request.body,
+        username: ctx.request.body.rut,
+        rut: ctx.request.body.rut.split('.').join(''),
         favorite:false,
         user:id,
     }
@@ -20,16 +22,25 @@ const createRut = async (ctx) =>{
         return ctx.notAcceptable({message:"rut exist"});
     }
     if(!await strapi.query("rut").findOne({ user: id})){
-       payload = {
-            ...payload,
-            favorite:true
-        }
+       payload = { ...payload, favorite:true }
+    }
+    const enterprises = await strapi.services.scrapper.checkAccount(payload);
+    if(enterprises.length === 0) { 
+        return ctx.badRequest({ message : "login failed" });
     }
     const createdRut = await strapi.query("rut").create({
         ...payload
     });
+    for( const enterprise of enterprises ) {
+        await strapi.services.enterprise.create({
+            rut: createdRut.id,
+            enterpriseRut: enterprise
+        });
+    }
 
-    return createdRut;
+    const updated = await strapi.query('rut').findOne({ id: createdRut.id });
+
+    return sanitizeEntity(updated, { model: strapi.models.rut });
 }
 
 const find = async (ctx) => {

@@ -28,7 +28,7 @@ class Crawler {
         const url = this.url;
 
         const browser = await puppeteer.launch({
-            headless: !process.env.TEST,
+            headless: true,
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
             'ignoreHTTPSErrors': true,
             timeout: 60000

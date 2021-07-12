@@ -28,10 +28,8 @@ const find = async (ctx) => {
 }
 
 const refresh = async (ctx) => {
-    const { user } = ctx.state;
-    const rut = await strapi.query('rut').findOne({
-        rut: ctx.request.body.rut
-    });
+    const { user: { id: user } } = ctx.state;
+    const rut = await strapi.services.rut.byEnterprise(ctx);
 
     if (!rut) return null;
 
@@ -40,10 +38,10 @@ const refresh = async (ctx) => {
     }
 
     const activeProcess = await strapi.query('process').findOne({
-        user: user.id,
+        user,
         status_in: ['ON_HOLD', 'PROCESSING'],
         entity_relation: 'emit',
-        rut: ctx.request.body.rut
+        rut: rut.rut
     });
 
     if (activeProcess) {
@@ -56,7 +54,7 @@ const refresh = async (ctx) => {
     const {user: _user, ...newProcess} = await strapi.query('process').create({
         user,
         entity_relation: 'emit',
-        rut: ctx.request.body.rut
+        rut: rut.rut
     })
 
     return sanitizeEntity(newProcess, {
@@ -65,54 +63,39 @@ const refresh = async (ctx) => {
 }
 
 const emitAffectInvoice = async (ctx) => {
-    const rut = await strapi.query('rut').findOne({
-        rut: ctx.request.body.rut
-    });
+    const rut = await strapi.services.rut.byEnterprise(ctx);
     if (!rut) return null;
 
     const result = await strapi.services.scrapper.createAffectInvoice({
         ...rut,
-        clave: rut.password,
-        ...ctx.request.body
-    }, {
-        ...ctx.request.body.document
-    });
+        clave: rut.password
+    }, ctx.request.body.document);
 
-    const res = await strapi.query('emit').findOne({
-        id: result.id
-    });
+    const res = await strapi.query('emit').findOne({ id: result.id });
 
     return res;
 }
 
 const emitCancelInvoice = async (ctx) => {
-    const rut = await strapi.query('rut').findOne({
-        rut: ctx.request.body.rut
-    });
+    const rut = await strapi.services.rut.byEnterprise(ctx);
     if (!rut) return null;
 
     const result = await strapi.services.scrapper.cancelInvoice({
         ...rut,
-        clave: rut.password,
-        ...ctx.request.body
+        clave: rut.password
     });
 
-    const res = await strapi.query('emit').findOne({
-        id: result.id
-    });
+    const res = await strapi.query('emit').findOne({ id: result.id });
 
     return res;
 }
 
 const acceptInvoice = async (ctx) => {
-    const rut = await strapi.query('rut').findOne({
-        rut: ctx.request.body.rut
-    });
+    const rut = await strapi.services.rut.byEnterprise(ctx);
     if (!rut) return null;
     const result = await strapi.services.scrapper.acceptInvoice({
         ...rut,
-        clave: rut.password,
-        ...ctx.request.body
+        clave: rut.password
     });
 
     // const res = await strapi.query('emit').findOne({
@@ -123,20 +106,14 @@ const acceptInvoice = async (ctx) => {
 }
 
 const emitExemptInvoice = async (ctx) => {
-
-    const rut = await strapi.query('rut').findOne({
-        rut: ctx.request.body.rut
-    });
-
+    const rut = await strapi.services.rut.byEnterprise(ctx);
     if (!rut) return null;
 
     const result = await strapi.services.scrapper.createExemptInvoice({
         ...rut,
-        clave: rut.password,
-        ...ctx.request.body
-    }, {
-        ...ctx.request.body.document
-    })
+        clave: rut.password
+    }, ctx.request.body.document )
+
     const res = await strapi.query('emit').findOne({
         id: result.id
     });
@@ -145,20 +122,13 @@ const emitExemptInvoice = async (ctx) => {
 }
 
 const emitDispatchGuide = async (ctx) => {
-
-    const rut = await strapi.query('rut').findOne({
-        rut: ctx.request.body.rut
-    });
-
+    const rut = await strapi.services.rut.byEnterprise(ctx);
     if (!rut) return null;
 
     const result = await strapi.services.scrapper.createDispatchGuide({
         ...rut,
-        clave: rut.password,
-        ...ctx.request.body
-    }, {
-        ...ctx.request.body.document
-    })
+        clave: rut.password
+    }, ctx.request.body.document );
 
     const res = await strapi.query('emit').findOne({
         id: result.id
@@ -169,22 +139,12 @@ const emitDispatchGuide = async (ctx) => {
 
 const documentReceiver = async (ctx) => {
     const { id } = ctx.state.user;
-    // return 'qlq';
-    const rut = await strapi.query("rut").findOne({ user: id, rut: ctx.request.body.rut });
-
+    const rut = await strapi.services.rut.byEnterprise(ctx);
     if (!rut) return ctx.badRequest({ message: "rut not exist" });
 
-    const args = {
-        ...rut,
-        clave: rut.password,
-        url: affectInvoice,
-        ...ctx.request.body
-    };
-
     const res = await strapi.services['rut-info'].findOrCreate({
-        args,
-        getDocumentReceiver: strapi.services.scrapper.getDocumentReceiver,
-        ...ctx.request.body
+        ...rut, clave: rut.password,
+        getDocumentReceiver: strapi.services.scrapper.getDocumentReceiver
     });
 
     return res;

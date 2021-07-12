@@ -61,7 +61,7 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "rut": {
+                  "enterprise_id": {
                     "type": "string"
                   }
                 }
@@ -129,8 +129,8 @@
             "application/json": {
               "schema": {
                   "properties": {
-                    "rut": {
-                    "type":"string"
+                    "enterprise_id": {
+                      "type":"string"
                     },
                     "document":{
                       "type":"object",
@@ -236,8 +236,8 @@
             "application/json": {
               "schema": {
                   "properties": {
-                    "rut": {
-                    "type":"string"
+                    "enterprise_id": {
+                      "type":"string"
                     },
                     "document":{
                       "type":"object",
@@ -343,8 +343,8 @@
             "application/json": {
               "schema": {
                   "properties": {
-                    "rut": {
-                    "type":"string"
+                    "enterprise_id": {
+                      "type":"string"
                     },
                     "document":{
                       "type":"object",
@@ -640,8 +640,8 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "rut": {
-                  "type":"string"
+                  "enterprise_id": {
+                    "type":"string"
                   },
                   "document":{
                     "type":"object",

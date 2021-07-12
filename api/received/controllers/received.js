@@ -1,21 +1,18 @@
 'use strict';
-const { refreshInformationEmits } = require("../../../workers");
+// const { refreshInformationEmits } = require("../../../workers");
 const { sanitizeEntity } = require('strapi-utils');
 
 const refresh = async (ctx) => {
-    const { user } = ctx.state;
-    const rut = await strapi.query('rut').findOne({ 
-        rut : ctx.request.body.rut
-    });
-
+    const { user: { id: user } } = ctx.state;
+    const rut = await strapi.services.rut.byEnterprise(ctx);
     if(!rut) return null;
 
 
     const activeProcess = await strapi.query('process').findOne({
-        user: user.id,
+        user,
         status_in: ['ON_HOLD', 'PROCESSING'],
         entity_relation: 'received',
-        rut: ctx.request.body.rut
+        rut: rut.rut
     });
 
     if (activeProcess) {
@@ -27,7 +24,7 @@ const refresh = async (ctx) => {
     const { user: _user, ...newProcess } = await strapi.query('process').create({
         user,
         entity_relation: 'received',
-        rut: ctx.request.body.rut
+        rut: rut.rut
     })
 
     return sanitizeEntity(newProcess, {

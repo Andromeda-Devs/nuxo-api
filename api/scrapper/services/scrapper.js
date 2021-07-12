@@ -123,10 +123,12 @@ const scraperObj = {
           ...invoice, '0': code,
           code, path: downloadPath
         }
+        const completeUrl = `${url}=${code}`;
         try {
-          const completeUrl = `${url}=${code}`;
           await page.goto(completeUrl);
+          console.log(completeUrl);
         } catch (e) {
+
           console.log('document: ', count++);
           let time = 100;
           const toRefresh = [
@@ -146,7 +148,8 @@ const scraperObj = {
         }
         await page.close();
       }
-      if (this._limit && this._limit < count) {
+      // if (this._limit && this._limit < count) {
+      if (10 < count) {
         break;
       }
     }
@@ -154,7 +157,7 @@ const scraperObj = {
     console.log('finish');
     return newInvoices;
   },
-  async scrapeBusiness(page, params, searchCode = null) {
+  async scrapeBusiness(page, params, searchCode = false) {
     let continueVar = false;
     let data = [];
     let iteration = 1;
@@ -194,11 +197,10 @@ const scraperObj = {
       await page.select('select[name="RUT_EMP"]', option)
       await page.click('button[type="submit"]');
       await page.waitForSelector('.container');
-      const id = await this.getID(page);
-      const result = await this.scrapeBusiness(page, { ...params, rut_id: id }, searchCode);
+      const result = await this.scrapeBusiness(page, { ...params, rut_id: option }, searchCode);
       if(searchCode) return result;
       data.push({
-        rut: id,
+        rut: option,
         data: result
       });
       await page.goto(this.multiRoute);
@@ -437,6 +439,34 @@ const scraperObj = {
     }
     return res;
   },
+  async excludeInvoice(page, invoice, empOption, params) {
+    const date = params.date.split('-');
+    await page.goto('https://www4.sii.cl/consdcvinternetui/#/index');
+    await sleep(2000);
+    await page.select('select[name="rut"]', empOption.split('.').join(''));
+    await sleep(2000);
+    await page.select('select[id="periodoMes"]', date[1]);
+    await page.select('select[ng-model="periodoAnho"]', date[0]);
+    await page.click('button[type="submit"]');
+    await sleep(2000);
+    const [link] = await page.$x("//a[contains(., '(61)')]");
+    if (link) {
+      await link.click();
+    }
+    await page.waitForSelector('#folioB');
+    await page.type('#folioB', invoice.invoice);
+    console.log('folio', invoice.invoice);
+    await sleep(2000);
+    const [button] = await page.$x('//td[@class="sorting_1"]//button[@type="button"]');
+    if(button) await button.click();
+    await sleep(10000);
+    console.log('ultimo paso');
+    const [select] = await page.$x('//div[@class="panel-body"]//select');
+    if (select) select.type('no');
+    await sleep(3000);
+    await page.click('input[value="Cambiar"]');
+    await sleep(10000);
+  },
   async cancelTicket({ document, browser, certificatePassword, empOption, ...params }) {
     var res = '';
     this._browser = browser;
@@ -445,14 +475,30 @@ const scraperObj = {
       await this.selectEmp(page, empOption);
     }
     await page.goto('https://www1.sii.cl/Portal001/EmiNotaCredito2.html');
-    await page.waitForSelector('.container');
+    await page.waitForSelector('a[name="boton_ir_blanco"]');
     await page.click('a[name="boton_ir_blanco"]');
-    await this.fillDocument(page, document);
-    return;
+    await page.waitForSelector('.container');
+    await this.fillDocument(page, {
+      ...document,
+      receiver: {
+        rut: await strapi.services.rut.format(empOption)
+      },
+      references: [{
+        type: 'Boleta elec.',
+        ref: params.reference,
+        date: params.date
+      }]
+    });
+    await page.select(tags.references.option.replace('"]', '1"]'), '1');
+    await page.type(tags.references.reason.replace('"]', '1"]'), (params.description || params.reference) );
+    await sleep(1000);
+    await page.select(tags.references.option.replace('"]', '1"]'), '1');
+    await page.type(tags.references.reason.replace('"]', '1"]'), (params.description || params.reference) );
     if (!params.debug) {
       console.log("Se van a finalizar los documentos");
       res = await this.finalizeDocument(page, certificatePassword, params);
     }
+    await this.excludeInvoice(page, res, empOption, params);
     return res;
   },
   async getReceiverData(page, receiver, result = {}) {
@@ -518,6 +564,7 @@ const scraperObj = {
   },
   async login(page, { url, username, password }) {
     await page.goto(url);
+    console.log(username, password)
     await page.type('#rutcntr', username);
     await page.type('#clave', password);
     await page.click('#bt_ingresar');
@@ -528,6 +575,20 @@ const scraperObj = {
       console.log('login failed');
     return page;
   },
+  async checkAccount({ browser, ...params }) {
+    let data = [];
+    const page = await this.login((await browser.newPage()), params);
+    if (page.url().includes('Portal001/mipeAdmin')) {
+      const id = await this.getID(page);
+      data.push(id.split('.').join(''));
+    } else if (page.url().includes('mipeSelEmpresa')) {
+      data  = await page.$$eval(
+        'select[name="RUT_EMP"] optgroup > option',
+        opts => opts.map(opt => opt.value)
+      )
+    }
+    return data;
+  },
   async scraper({ browser, ...params }) {
     let data = [];
     this._browser = browser;
@@ -536,7 +597,7 @@ const scraperObj = {
     if (page.url().includes('Portal001/mipeAdmin')) {
       const id = await this.getID(page);
       console.log('scraping unico', id)
-      const result = await this.scrapeBusiness(page, { params, rut_id: id });
+      const result = await this.scrapeBusiness(page, { params, rut_id: id.split('.').join('') });
       data.push({ rut: id, data: result })
     } else if (page.url().includes('mipeSelEmpresa')) {
       this.multiRoute = page.url();
@@ -571,25 +632,34 @@ const scraperObj = {
     let result = await this.scrapeBusiness(page, params, code);
     await page.goto(result['0']);
     await page.waitForSelector('.container');
+    console.log('estoy en:', await page.url());
     const commercialResponsePath = await this.getLink(page, `//a[contains( . , 'Dar Respuesta comercial')]`);
     const receipt = await this.getLink(page, `//a[contains( . , 'Dar Acuse de Recibo')]`)
     await page.goto(commercialResponsePath);
     await page.waitForSelector('.container');
+    console.log('escribiendo');
     await this.processSelectors(page, commercialResponse, acceptBody);
     await page.click('input[value="Firmar y Enviar"]');
+    console.log('estoy en:', await page.url());
     await page.waitForSelector(this.tags.certificate);
+    await sleep(1000);
     await page.type(this.tags.certificate, certificatePassword);
+    console.log('estoy en:', await page.url());
+    await sleep(1000);
     await page.click('div[id="ingresoClaveCertificadoCentral"] button');
-    await page.waitForSelector('.container');
-    await page.goto(receipt);
-    if(receiptAccuse)
-      await this.processSelectors(page, receiptAccuse, acceptBody);
-    await page.click('input[value="Firmar y Enviar"]');
-    await page.waitForSelector(this.tags.certificate);
-    await page.type(this.tags.certificate, certificatePassword);
-    await page.click('div[id="ingresoClaveCertificadoCentral"] button');
-    await page.waitForSelector('.container');
-    return result;
+    try{
+      await page.waitForSelector('.container');
+    }catch (err) {}
+    ///////////////////////////////////////////////////////////////////////
+    // await page.goto(receipt);
+    // if(receiptAccuse)
+    //   await this.processSelectors(page, receiptAccuse, acceptBody);
+    // await page.click('input[value="Firmar y Enviar"]');
+    // await page.waitForSelector(this.tags.certificate);
+    // await page.type(this.tags.certificate, certificatePassword);
+    // await page.click('div[id="ingresoClaveCertificadoCentral"] button');
+    // await page.waitForSelector('.container');
+    return {message: "successfull"};
   }
 }
 
@@ -627,6 +697,7 @@ const scrapeAll = async ({ rut: username, clave: password, ...params }) => {
 
 const scraperFunction = async ({ rut: username, clave: password, ...params }, attr) => {
   let browser;
+  console.log(username, password)
   try {
     browser = await startBrowser();
     const result = await scraperObj[attr]({
@@ -645,6 +716,12 @@ const scraperFunction = async ({ rut: username, clave: password, ...params }, at
 const getEmited = async (settings) => {
   const url = 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoRutClave.html?https://www1.sii.cl/cgi-bin/Portal001/mipeSelEmpresa.cgi?DESDE_DONDE_URL=OPCION%3D2%26TIPO%3D4';
   const result = await scrapeAll({ url, ...settings });
+  return result;
+}
+
+const checkAccount = async (settings) => {
+  const url = 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoRutClave.html?https://www1.sii.cl/cgi-bin/Portal001/mipeSelEmpresa.cgi?DESDE_DONDE_URL=OPCION%3D2%26TIPO%3D4';
+  const result = await scraperFunction({ url, ...settings }, 'checkAccount');
   return result;
 }
 
@@ -673,8 +750,6 @@ const createAffectInvoice = async (settings, document) => {
 }
 
 const cancelTicket = async (settings, document) => {
-  console.log(settings);
-  return;
   const url = 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoRutClave.html?https://www1.sii.cl/cgi-bin/Portal001/mipeSelEmpresa.cgi?DESDE_DONDE_URL=OPCION%3D2%26TIPO%3D4';
   const result = await scraperFunction({ document, url, ...settings }, 'cancelTicket');
   return result;
@@ -693,7 +768,8 @@ const createDispatchGuide = async (settings, document) => {
 }
 
 const getDocumentReceiver = async (settings, document) => {
-  const result = await scraperFunction({ document, ...settings }, 'getReceiver');
+  const url = 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoRutClave.html?https://www1.sii.cl/cgi-bin/Portal001/mipeSelEmpresa.cgi?DESDE_DONDE_URL=OPCION%3D33%26TIPO%3D4';
+  const result = await scraperFunction({ document, url, ...settings }, 'getReceiver');
   return result;
 }
 
@@ -706,5 +782,6 @@ module.exports = {
   getDocumentReceiver,
   cancelInvoice,
   cancelTicket,
-  acceptInvoice
+  acceptInvoice,
+  checkAccount
 };
