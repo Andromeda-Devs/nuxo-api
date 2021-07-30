@@ -148,7 +148,10 @@ const documentReceiver = async (ctx) => {
     });
 
     return res;
+
 }
+
+//document receiver scrapper
 
 const documentReceiverDefault = async (ctx) => {
     const rut = process.env.DEFAULT_RUT;

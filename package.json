@@ -25,6 +25,7 @@
     "mysql": "^2.18.1",
     "pdfreader": "^1.2.10",
     "pg": "^8.6.0",
+    "pkg": "^5.3.1",
     "puppeteer": "^9.1.1",
     "puppeteer-extra": "^3.1.18",
     "puppeteer-extra-plugin-adblocker": "^2.11.11",
